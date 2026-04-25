@@ -1,3 +1,4 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,156 +23,137 @@ class TimerScreen extends ConsumerWidget {
         title: const Text('Game Timer'),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Text(
-                'MATCH TIME',
-                style: TextStyle(
-                  letterSpacing: 4,
-                  fontWeight: FontWeight.w300,
-                  fontSize: 16,
-                ),
-              ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
-              const SizedBox(height: 8),
-              Text(
-                formatDuration(timerState.durationRemaining),
-                style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                      fontSize: 80,
-                      fontWeight: FontWeight.bold,
-                    ),
+      body: LayoutBuilder(
+        builder: (context, constraints) {
+          final isNarrow = constraints.maxWidth < 600;
+          final isShort = constraints.maxHeight < 400;
+
+          return Center(
+            child: SingleChildScrollView(
+              padding: EdgeInsets.symmetric(
+                horizontal: isNarrow ? 16 : 32,
+                vertical: isShort ? 8 : 16,
               ),
-              const SizedBox(height: 32),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  _PresetButton(
-                    label: '2:30',
-                    onPressed: () => notifier.setPreset(150),
-                    isSelected: timerState.durationRemaining == 150,
-                  ),
-                  _PresetButton(
-                    label: '2:00',
-                    onPressed: () => notifier.setPreset(120),
-                    isSelected: timerState.durationRemaining == 120,
-                  ),
-                  _PresetButton(
-                    label: '0:30',
-                    onPressed: () => notifier.setPreset(30),
-                    isSelected: timerState.durationRemaining == 30,
-                  ),
-                ],
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2, end: 0),
-              const SizedBox(height: 48),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (timerState.status == TimerStateStatus.running)
-                    _ControlButton(
-                      icon: Icons.pause_rounded,
-                      label: 'PAUSE',
-                      onPressed: notifier.pause,
-                      color: Colors.orange,
-                    )
-                  else
-                    _ControlButton(
-                      icon: Icons.play_arrow_rounded,
-                      label: 'START',
-                      onPressed: notifier.start,
-                      color: Theme.of(context).primaryColor,
+              child: ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: 600),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Header Section
+                    Text(
+                      'MATCH TIME',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            letterSpacing: 2,
+                            color: Colors.grey[600],
+                          ),
+                    ).animate().fadeIn(),
+
+                    // Timer Section - Responsive font size
+                    Padding(
+                      padding: EdgeInsets.symmetric(vertical: isShort ? 4 : 16),
+                      child: Text(
+                        formatDuration(timerState.durationRemaining),
+                        style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                              fontSize: isShort ? 60 : (isNarrow ? 80 : 120),
+                              fontWeight: FontWeight.bold,
+                              fontFeatures: const [FontFeature.tabularFigures()],
+                            ),
+                      ),
                     ),
-                  const SizedBox(width: 32),
-                  _ControlButton(
-                    icon: Icons.refresh_rounded,
-                    label: 'RESET',
-                    onPressed: notifier.reset,
-                    color: Colors.grey[700]!,
-                  ),
-                ],
-              ).animate().fadeIn(delay: 400.ms),
-            ],
-          ),
-        ),
+
+                    // Presets Section - Flexible layout
+                    Wrap(
+                      spacing: 12,
+                      runSpacing: 12,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        _PresetBtn(
+                          label: '2:30',
+                          onPressed: () => notifier.setPreset(150),
+                          selected: timerState.durationRemaining == 150,
+                        ),
+                        _PresetBtn(
+                          label: '2:00',
+                          onPressed: () => notifier.setPreset(120),
+                          selected: timerState.durationRemaining == 120,
+                        ),
+                        _PresetBtn(
+                          label: '0:30',
+                          onPressed: () => notifier.setPreset(30),
+                          selected: timerState.durationRemaining == 30,
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: isShort ? 16 : 40),
+
+                    // Controls Section
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        _MainActionBtn(
+                          isRunning: timerState.status == TimerStateStatus.running,
+                          onPressed: timerState.status == TimerStateStatus.running
+                              ? notifier.pause
+                              : notifier.start,
+                        ),
+                        const SizedBox(width: 24),
+                        IconButton.filledTonal(
+                          onPressed: notifier.reset,
+                          icon: const Icon(Icons.refresh_rounded),
+                          padding: const EdgeInsets.all(16),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
 }
 
-class _PresetButton extends StatelessWidget {
+class _PresetBtn extends StatelessWidget {
   final String label;
   final VoidCallback onPressed;
-  final bool isSelected;
+  final bool selected;
 
-  const _PresetButton({
+  const _PresetBtn({
     required this.label,
     required this.onPressed,
-    required this.isSelected,
+    required this.selected,
   });
 
   @override
   Widget build(BuildContext context) {
-    return OutlinedButton(
+    return ChoiceChip(
+      label: Text(label),
+      selected: selected,
+      onSelected: (_) => onPressed(),
+      showCheckmark: false,
+    );
+  }
+}
+
+class _MainActionBtn extends StatelessWidget {
+  final bool isRunning;
+  final VoidCallback onPressed;
+
+  const _MainActionBtn({required this.isRunning, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return FilledButton.icon(
       onPressed: onPressed,
-      style: OutlinedButton.styleFrom(
-        backgroundColor: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : null,
-        side: BorderSide(
-          color: isSelected ? Theme.of(context).primaryColor : Colors.grey[300]!,
-          width: 2,
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      style: FilledButton.styleFrom(
+        backgroundColor: isRunning ? Colors.orange : null,
+        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
       ),
-      child: Text(
-        label,
-        style: TextStyle(
-          fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-          color: isSelected ? Theme.of(context).primaryColor : Colors.black87,
-        ),
-      ),
-    );
-  }
-}
-
-class _ControlButton extends StatelessWidget {
-  final IconData icon;
-  final String label;
-  final VoidCallback onPressed;
-  final Color color;
-
-  const _ControlButton({
-    required this.icon,
-    required this.label,
-    required this.onPressed,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ElevatedButton(
-          onPressed: onPressed,
-          style: ElevatedButton.styleFrom(
-            backgroundColor: color,
-            foregroundColor: Colors.white,
-            shape: const CircleBorder(),
-            padding: const EdgeInsets.all(24),
-          ),
-          child: Icon(icon, size: 40),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          label,
-          style: TextStyle(
-            color: color,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.2,
-            fontSize: 12,
-          ),
-        ),
-      ],
+      icon: Icon(isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded),
+      label: Text(isRunning ? 'PAUSE' : 'START'),
     );
   }
 }

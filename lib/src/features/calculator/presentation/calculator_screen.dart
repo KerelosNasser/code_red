@@ -21,7 +21,7 @@ class CalculatorScreen extends ConsumerWidget {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => notifier.reset(),
-          ).animate().rotate(duration: 500.ms),
+          ).animate(key: const ValueKey('refresh_btn')).rotate(duration: 500.ms),
         ],
       ),
       body: Column(
@@ -33,8 +33,13 @@ class CalculatorScreen extends ConsumerWidget {
               itemCount: daraGamePhases.length,
               itemBuilder: (context, index) {
                 final phase = daraGamePhases[index];
-                return _PhaseSection(phase: phase, scores: scores, notifier: notifier)
-                    .animate()
+                return _PhaseSection(
+                  key: ValueKey('phase_${phase.title}'),
+                  phase: phase,
+                  scores: scores,
+                  notifier: notifier,
+                )
+                    .animate(key: ValueKey('phase_anim_${phase.title}'))
                     .fadeIn(delay: (100 * index).ms, duration: 500.ms)
                     .slideY(begin: 0.1, end: 0);
               },
@@ -49,7 +54,7 @@ class CalculatorScreen extends ConsumerWidget {
 class _ScoreSummary extends StatelessWidget {
   final int totalScore;
 
-  const _ScoreSummary({required this.totalScore});
+  const _ScoreSummary({super.key, required this.totalScore});
 
   @override
   Widget build(BuildContext context) {
@@ -81,7 +86,7 @@ class _ScoreSummary extends StatelessWidget {
                   fontSize: 72,
                   fontWeight: FontWeight.bold,
                 ),
-          ).animate(key: ValueKey(totalScore)).scale(duration: 200.ms, curve: Curves.easeOut),
+          ).animate(key: ValueKey('score_text_$totalScore')).scale(duration: 200.ms, curve: Curves.easeOut),
         ],
       ),
     );
@@ -94,6 +99,7 @@ class _PhaseSection extends StatelessWidget {
   final dynamic notifier;
 
   const _PhaseSection({
+    super.key,
     required this.phase,
     required this.scores,
     required this.notifier,
@@ -116,6 +122,7 @@ class _PhaseSection extends StatelessWidget {
           ),
         ),
         ...phase.rules.map((rule) => _RuleItem(
+              key: ValueKey(rule.id),
               rule: rule,
               value: scores[rule.id] ?? 0,
               onChanged: (delta) => notifier.updateScore(rule.id, delta),
@@ -132,6 +139,7 @@ class _RuleItem extends StatelessWidget {
   final Function(int) onChanged;
 
   const _RuleItem({
+    super.key,
     required this.rule,
     required this.value,
     required this.onChanged,
@@ -201,7 +209,7 @@ class _RuleItem extends StatelessWidget {
                 Switch(
                   value: value > 0,
                   onChanged: (val) => onChanged(val ? 1 : -1),
-                  activeThumbColor: Theme.of(context).primaryColor,
+                  activeColor: Theme.of(context).primaryColor,
                 ),
             ],
           ),
@@ -215,7 +223,7 @@ class _ControlBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
 
-  const _ControlBtn({required this.icon, this.onPressed});
+  const _ControlBtn({super.key, required this.icon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

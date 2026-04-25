@@ -29,7 +29,7 @@ class AppTheme {
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+          side: BorderSide(color: Colors.grey.withOpacity(0.2)),
         ),
         color: Colors.white,
       ),
@@ -66,7 +66,7 @@ class AppTheme {
       ),
       dividerTheme: DividerThemeData(
         thickness: 1,
-        color: Colors.grey.withValues(alpha: 0.2),
+        color: Colors.grey.withOpacity(0.2),
       ),
     );
   }
