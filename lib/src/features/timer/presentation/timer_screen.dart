@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import '../providers/timer_provider.dart';
 
 class TimerScreen extends ConsumerWidget {
@@ -33,7 +34,7 @@ class TimerScreen extends ConsumerWidget {
                 fontWeight: FontWeight.w300,
                 fontSize: 16,
               ),
-            ),
+            ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
             const SizedBox(height: 8),
             Text(
               formatDuration(timerState.durationRemaining),
@@ -41,7 +42,7 @@ class TimerScreen extends ConsumerWidget {
                     fontSize: 100,
                     fontWeight: FontWeight.bold,
                   ),
-            ),
+            ).animate(key: ValueKey(timerState.durationRemaining)).scale(duration: 200.ms, curve: Curves.easeOut),
             const SizedBox(height: 40),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -62,7 +63,7 @@ class TimerScreen extends ConsumerWidget {
                   isSelected: timerState.durationRemaining == 30,
                 ),
               ],
-            ),
+            ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2, end: 0),
             const SizedBox(height: 60),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -73,23 +74,23 @@ class TimerScreen extends ConsumerWidget {
                     label: 'PAUSE',
                     onPressed: notifier.pause,
                     color: Colors.orange,
-                  )
+                  ).animate().scale(duration: 200.ms)
                 else
                   _ControlButton(
                     icon: Icons.play_arrow_rounded,
                     label: 'START',
                     onPressed: notifier.start,
                     color: Theme.of(context).primaryColor,
-                  ),
+                  ).animate().scale(duration: 200.ms),
                 const SizedBox(width: 32),
                 _ControlButton(
                   icon: Icons.refresh_rounded,
                   label: 'RESET',
                   onPressed: notifier.reset,
                   color: Colors.grey[700]!,
-                ),
+                ).animate().scale(duration: 200.ms),
               ],
-            ),
+            ).animate().fadeIn(delay: 400.ms),
           ],
         ),
       ),
