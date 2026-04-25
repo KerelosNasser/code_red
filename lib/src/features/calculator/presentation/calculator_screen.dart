@@ -201,7 +201,7 @@ class _RuleItem extends StatelessWidget {
                 Switch(
                   value: value > 0,
                   onChanged: (val) => onChanged(val ? 1 : -1),
-                  activeColor: Theme.of(context).primaryColor,
+                  activeThumbColor: Theme.of(context).primaryColor,
                 ),
             ],
           ),
@@ -223,7 +223,7 @@ class _ControlBtn extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(icon),
       style: IconButton.styleFrom(
-        backgroundColor: Theme.of(context).primaryColor.withOpacity(0.05),
+        backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
         foregroundColor: Theme.of(context).primaryColor,
         disabledBackgroundColor: Colors.grey[100],
         disabledForegroundColor: Colors.grey[400],
