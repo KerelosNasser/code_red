@@ -11,8 +11,7 @@ class AppTheme {
         primary: AppColors.primaryBlue,
         secondary: AppColors.secondaryGold,
         error: AppColors.accentMaroon,
-        background: AppColors.background,
-        surface: AppColors.surface,
+        surface: AppColors.background,
       ),
       scaffoldBackgroundColor: AppColors.background,
       appBarTheme: AppBarTheme(
@@ -26,11 +25,11 @@ class AppTheme {
         ),
         elevation: 0,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         elevation: 0,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
-          side: BorderSide(color: Colors.grey.withOpacity(0.2)),
+          side: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
         ),
         color: Colors.white,
       ),
@@ -67,7 +66,7 @@ class AppTheme {
       ),
       dividerTheme: DividerThemeData(
         thickness: 1,
-        color: Colors.grey.withOpacity(0.2),
+        color: Colors.grey.withValues(alpha: 0.2),
       ),
     );
   }

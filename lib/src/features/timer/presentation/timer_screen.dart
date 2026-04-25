@@ -22,76 +22,78 @@ class TimerScreen extends ConsumerWidget {
         title: const Text('Game Timer'),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'MATCH TIME',
-              style: TextStyle(
-                letterSpacing: 4,
-                fontWeight: FontWeight.w300,
-                fontSize: 16,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 40.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text(
+                'MATCH TIME',
+                style: TextStyle(
+                  letterSpacing: 4,
+                  fontWeight: FontWeight.w300,
+                  fontSize: 16,
+                ),
+              ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
+              const SizedBox(height: 8),
+              Text(
+                formatDuration(timerState.durationRemaining),
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                      fontSize: 80,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
-            ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2, end: 0),
-            const SizedBox(height: 8),
-            Text(
-              formatDuration(timerState.durationRemaining),
-              style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                    fontSize: 100,
-                    fontWeight: FontWeight.bold,
+              const SizedBox(height: 32),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _PresetButton(
+                    label: '2:30',
+                    onPressed: () => notifier.setPreset(150),
+                    isSelected: timerState.durationRemaining == 150,
                   ),
-            ).animate(key: ValueKey(timerState.durationRemaining)).scale(duration: 200.ms, curve: Curves.easeOut),
-            const SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _PresetButton(
-                  label: '2:30',
-                  onPressed: () => notifier.setPreset(150),
-                  isSelected: timerState.durationRemaining == 150,
-                ),
-                _PresetButton(
-                  label: '2:00',
-                  onPressed: () => notifier.setPreset(120),
-                  isSelected: timerState.durationRemaining == 120,
-                ),
-                _PresetButton(
-                  label: '0:30',
-                  onPressed: () => notifier.setPreset(30),
-                  isSelected: timerState.durationRemaining == 30,
-                ),
-              ],
-            ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2, end: 0),
-            const SizedBox(height: 60),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (timerState.status == TimerStateStatus.running)
+                  _PresetButton(
+                    label: '2:00',
+                    onPressed: () => notifier.setPreset(120),
+                    isSelected: timerState.durationRemaining == 120,
+                  ),
+                  _PresetButton(
+                    label: '0:30',
+                    onPressed: () => notifier.setPreset(30),
+                    isSelected: timerState.durationRemaining == 30,
+                  ),
+                ],
+              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.2, end: 0),
+              const SizedBox(height: 48),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (timerState.status == TimerStateStatus.running)
+                    _ControlButton(
+                      icon: Icons.pause_rounded,
+                      label: 'PAUSE',
+                      onPressed: notifier.pause,
+                      color: Colors.orange,
+                    )
+                  else
+                    _ControlButton(
+                      icon: Icons.play_arrow_rounded,
+                      label: 'START',
+                      onPressed: notifier.start,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  const SizedBox(width: 32),
                   _ControlButton(
-                    icon: Icons.pause_rounded,
-                    label: 'PAUSE',
-                    onPressed: notifier.pause,
-                    color: Colors.orange,
-                  ).animate().scale(duration: 200.ms)
-                else
-                  _ControlButton(
-                    icon: Icons.play_arrow_rounded,
-                    label: 'START',
-                    onPressed: notifier.start,
-                    color: Theme.of(context).primaryColor,
-                  ).animate().scale(duration: 200.ms),
-                const SizedBox(width: 32),
-                _ControlButton(
-                  icon: Icons.refresh_rounded,
-                  label: 'RESET',
-                  onPressed: notifier.reset,
-                  color: Colors.grey[700]!,
-                ).animate().scale(duration: 200.ms),
-              ],
-            ).animate().fadeIn(delay: 400.ms),
-          ],
+                    icon: Icons.refresh_rounded,
+                    label: 'RESET',
+                    onPressed: notifier.reset,
+                    color: Colors.grey[700]!,
+                  ),
+                ],
+              ).animate().fadeIn(delay: 400.ms),
+            ],
+          ),
         ),
       ),
     );
@@ -114,7 +116,7 @@ class _PresetButton extends StatelessWidget {
     return OutlinedButton(
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
-        backgroundColor: isSelected ? Theme.of(context).primaryColor.withOpacity(0.1) : null,
+        backgroundColor: isSelected ? Theme.of(context).primaryColor.withValues(alpha: 0.1) : null,
         side: BorderSide(
           color: isSelected ? Theme.of(context).primaryColor : Colors.grey[300]!,
           width: 2,
