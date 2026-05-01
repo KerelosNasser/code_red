@@ -7,6 +7,7 @@ import '../../../core/theme/app_colors.dart';
 import '../providers/calculator_provider.dart';
 import '../data/game_rules.dart';
 import '../models/rule.dart';
+import '../../../core/utils/responsive_utils.dart';
 
 class CalculatorScreen extends ConsumerWidget {
   const CalculatorScreen({super.key});
@@ -190,7 +191,7 @@ class _RuleItem extends StatelessWidget {
                       onPressed: value > 0 ? () => onChanged(-1) : null,
                     ),
                     SizedBox(
-                      width: 40,
+                      width: context.scaleWidth(40),
                       child: Center(
                         child: Text(
                           '$value',
@@ -203,13 +204,10 @@ class _RuleItem extends StatelessWidget {
                     ),
                     _ControlBtn(
                       icon: Icons.add,
-                  ),
-                  _ControlBtn(
-                    icon: Icons.add,
-                    onPressed: value < rule.maxValue ? () => onChanged(1) : null,
-                  ),
-                ],
-              )
+                      onPressed: value < rule.maxValue ? () => onChanged(1) : null,
+                    ),
+                  ],
+                )
             else if (rule.type == RuleType.toggle)
               Switch(
                 value: value > 0,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/dara_app_bar.dart';
 import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive_utils.dart';
 
 class ScheduleItem {
   final String time;
@@ -73,7 +74,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           ),
           Expanded(
             child: ListView.builder(
-              padding: const EdgeInsets.all(16),
+              padding: EdgeInsets.all(context.scaleWidth(16)),
               itemCount: filteredItems.length,
               itemBuilder: (context, index) {
                 final item = filteredItems[index];
@@ -160,14 +161,14 @@ class _TimelineItem extends StatelessWidget {
       child: Row(
         children: [
           SizedBox(
-            width: 80,
+            width: context.scaleWidth(80),
             child: Column(
               children: [
                 Text(
                   item.time,
                   style: TextStyle(
                     color: Colors.grey[600],
-                    fontSize: 12,
+                    fontSize: context.scaleFont(12),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -216,7 +217,7 @@ class _TimelineItem extends StatelessWidget {
                         style: TextStyle(
                           color: item.isMyTeam ? AppColors.secondaryGold : Colors.grey[600],
                           fontWeight: item.isMyTeam ? FontWeight.bold : FontWeight.normal,
-                          fontSize: 12,
+                          fontSize: context.scaleFont(12),
                         ),
                       ),
                     ],

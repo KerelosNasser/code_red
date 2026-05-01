@@ -8,6 +8,7 @@ import '../providers/presets_provider.dart';
 import '../models/timer_preset.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../shared/widgets/dara_app_bar.dart';
+import '../../../core/utils/responsive_utils.dart';
 
 class TimerScreen extends ConsumerWidget {
   const TimerScreen({super.key});
@@ -144,7 +145,8 @@ class _TimerDisplay extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         // Ensure the timer fits on smaller screens
-        final maxSize = constraints.maxWidth < 360 ? constraints.maxWidth - 32 : 320.0;
+        final maxAllowed = context.isSmallPhone ? context.screenWidth - 32 : 320.0;
+        final maxSize = constraints.maxWidth < maxAllowed ? constraints.maxWidth : maxAllowed;
         final arcSize = maxSize * 0.75; // Timer arc is 75% of the total area to leave room for buttons
         
         return Center(
@@ -524,37 +526,52 @@ class _Controls extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Play / Pause
-        Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(32),
-            gradient: LinearGradient(
-              colors: isRunning
-                  ? [AppColors.timerWarning, AppColors.timerWarning.withOpacity(0.8)]
-                  : [AppColors.secondaryGold, AppColors.secondaryGoldDark],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: (isRunning ? AppColors.timerWarning : AppColors.secondaryGold).withValues(alpha: 0.4),
-                blurRadius: 8,
-                offset: const Offset(0, 4),
+        IntrinsicWidth(
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              gradient: LinearGradient(
+                colors: isRunning
+                    ? [AppColors.timerWarning, AppColors.timerWarning.withValues(alpha: 0.8)]
+                    : [AppColors.secondaryGold, AppColors.secondaryGoldDark],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
               ),
-            ],
-          ),
-          child: ElevatedButton.icon(
-            onPressed: isRunning ? notifier.pause : notifier.start,
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.transparent,
-              shadowColor: Colors.transparent,
-              foregroundColor: Colors.white,
-              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+              boxShadow: [
+                BoxShadow(
+                  color: (isRunning ? AppColors.timerWarning : AppColors.secondaryGold).withValues(alpha: 0.4),
+                  blurRadius: 8,
+                  offset: const Offset(0, 4),
+                ),
+              ],
             ),
-            icon: Icon(isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded),
-            label: Text(
-              isRunning ? 'PAUSE' : 'START',
-              style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: isRunning ? notifier.pause : notifier.start,
+                borderRadius: BorderRadius.circular(32),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        isRunning ? 'PAUSE' : 'START',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: 1.2,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
             ),
           ),
         ),

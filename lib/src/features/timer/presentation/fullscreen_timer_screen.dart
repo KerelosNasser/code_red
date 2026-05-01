@@ -6,6 +6,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import '../providers/timer_provider.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive_utils.dart';
 
 /// Full-screen timer overlay — covers nav bar, cannot be escaped accidentally.
 /// Long-press anywhere or tap the subtle exit button → confirmation dialog.
@@ -44,7 +45,7 @@ class _FullscreenTimerScreenState extends ConsumerState<FullscreenTimerScreen>
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        backgroundColor: const Color(0xFF1A1A1A),
+        backgroundColor: Colors.black,
         title: const Text(
           'Exit Fullscreen?',
           style: TextStyle(color: Colors.white),
@@ -255,8 +256,7 @@ class _FullscreenTimerScreenState extends ConsumerState<FullscreenTimerScreen>
   }
 
   double _fontSize(BuildContext context) {
-    final w = MediaQuery.of(context).size.width;
-    return w > 600 ? 120 : 80;
+    return context.scaleFont(100);
   }
 
   String _modeLabel(TimerMode mode) => switch (mode) {

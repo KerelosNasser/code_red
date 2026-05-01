@@ -6,6 +6,7 @@ import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../timer/providers/timer_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/utils/responsive_utils.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Models
@@ -131,7 +132,7 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
           // ── Drag-to-reorder list ────────────────────────────────────────
           Expanded(
             child: ReorderableListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 80),
+              padding: EdgeInsets.fromLTRB(context.scaleWidth(16), 8, context.scaleWidth(16), 80),
               itemCount: _segments.length,
               onReorder: (oldIndex, newIndex) {
                 setState(() {
@@ -265,7 +266,7 @@ class _SummaryBar extends StatelessWidget {
           bottomRight: Radius.circular(32),
         ),
       ),
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
+      padding: EdgeInsets.fromLTRB(context.scaleWidth(20), 12, context.scaleWidth(20), 24),
       child: Column(
         children: [
           Container(
@@ -277,20 +278,20 @@ class _SummaryBar extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                const Text(
+                Text(
                   'TOTAL DURATION',
                   style: TextStyle(
                     color: Colors.white70,
-                    fontSize: 10,
+                    fontSize: context.scaleFont(10),
                     fontWeight: FontWeight.bold,
                     letterSpacing: 1.2,
                   ),
                 ),
                 Text(
                   totalFormatted,
-                  style: const TextStyle(
+                  style: TextStyle(
                     color: Colors.white,
-                    fontSize: 24,
+                    fontSize: context.scaleFont(24),
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -342,7 +343,7 @@ class _SegmentCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: DaraCard(
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+          contentPadding: EdgeInsets.symmetric(horizontal: context.scaleWidth(14), vertical: 6),
           leading: _StatusDot(status: segment.status, color: color, onTap: onStatusTap),
           title: Text(
             segment.name,
@@ -350,16 +351,16 @@ class _SegmentCard extends StatelessWidget {
               fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
               color: isDone ? AppColors.textSecondary : AppColors.primaryBlueDark,
               decoration: isDone ? TextDecoration.lineThrough : null,
-              fontSize: 15,
+              fontSize: context.scaleFont(15),
             ),
           ),
           subtitle: Row(
             children: [
-              Icon(_iconFor(segment.type), size: 12, color: color),
+              Icon(_iconFor(segment.type), size: context.scaleFont(12), color: color),
               const SizedBox(width: 4),
               Text(
                 '${_labelFor(segment.type)} · ${segment.durationMinutes} min',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 12),
+                style: TextStyle(color: AppColors.textSecondary, fontSize: context.scaleFont(12)),
               ),
             ],
           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 import '../theme/app_colors.dart';
+import '../utils/responsive_utils.dart';
 
 class AppShell extends StatelessWidget {
   final Widget child;
@@ -30,19 +31,19 @@ class AppShell extends StatelessWidget {
       extendBody: true,
       body: child,
       bottomNavigationBar: CircleNavBar(
-        activeIcons: const [
-          Icon(Icons.calculate, color: Colors.white),
-          Icon(Icons.timer, color: Colors.white),
-          Icon(Icons.emoji_events, color: Colors.white),
-          Icon(Icons.leaderboard, color: Colors.white),
-          Icon(Icons.calendar_today, color: Colors.white),
+        activeIcons: [
+          Icon(Icons.calculate, color: Colors.white, size: context.scaleFont(24)),
+          Icon(Icons.timer, color: Colors.white, size: context.scaleFont(24)),
+          Icon(Icons.emoji_events, color: Colors.white, size: context.scaleFont(24)),
+          Icon(Icons.leaderboard, color: Colors.white, size: context.scaleFont(24)),
+          Icon(Icons.calendar_today, color: Colors.white, size: context.scaleFont(24)),
         ],
-        inactiveIcons: const [
-          Text("Calc", style: TextStyle(color: Colors.white)),
-          Text("Timer", style: TextStyle(color: Colors.white)),
-          Text("Matches", style: TextStyle(color: Colors.white)),
-          Text("Board", style: TextStyle(color: Colors.white)),
-          Text("Sched", style: TextStyle(color: Colors.white)),
+        inactiveIcons: [
+          Text("Calc", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
+          Text("Timer", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
+          Text("Matches", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
+          Text("Board", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
+          Text("Sched", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
         ],
         color: AppColors.primaryBlueDark,
         circleColor: AppColors.secondaryGold,
@@ -68,7 +69,7 @@ class AppShell extends StatelessWidget {
               break;
           }
         },
-        padding: const EdgeInsets.only(left: 16, right: 16, bottom: 20),
+        padding: EdgeInsets.only(left: context.scaleWidth(16), right: context.scaleWidth(16), bottom: 20),
         cornerRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           topRight: Radius.circular(8),

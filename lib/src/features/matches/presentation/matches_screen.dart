@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../shared/widgets/dara_app_bar.dart';
 import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../core/utils/responsive_utils.dart';
 
 class MatchModel {
   final String matchNumber;
@@ -60,7 +61,7 @@ class MatchesScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: const DaraAppBar(title: 'MATCHES'),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(context.scaleWidth(16)),
         itemCount: mockMatches.length,
         itemBuilder: (context, index) {
           final match = mockMatches[index];
@@ -88,7 +89,7 @@ class MatchesScreen extends StatelessWidget {
                     match.field,
                     style: TextStyle(
                       color: Colors.grey[600],
-                      fontSize: 12,
+                      fontSize: context.scaleFont(12),
                     ),
                   ),
                   const Divider(height: 24),
@@ -159,7 +160,7 @@ class _StatusBadge extends StatelessWidget {
         status.toUpperCase(),
         style: TextStyle(
           color: color,
-          fontSize: 10,
+          fontSize: context.scaleFont(10),
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -187,7 +188,7 @@ class _AllianceColumn extends StatelessWidget {
           Text(
             score.toString(),
             style: TextStyle(
-              fontSize: 24,
+              fontSize: context.scaleFont(24),
               fontWeight: FontWeight.bold,
               color: color,
             ),
