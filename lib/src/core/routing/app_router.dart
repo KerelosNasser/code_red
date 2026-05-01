@@ -3,9 +3,11 @@ import 'package:go_router/go_router.dart';
 import 'package:circle_nav_bar/circle_nav_bar.dart';
 import '../../features/calculator/presentation/calculator_screen.dart';
 import '../../features/timer/presentation/timer_screen.dart';
+import '../../features/timer/presentation/fullscreen_timer_screen.dart';
 import '../../features/matches/presentation/matches_screen.dart';
 import '../../features/leaderboard/presentation/leaderboard_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
+import '../theme/app_colors.dart';
 
 class ScaffoldWithNavBar extends StatelessWidget {
   final Widget child;
@@ -47,10 +49,10 @@ class ScaffoldWithNavBar extends StatelessWidget {
           Text("Board", style: TextStyle(color: Colors.white)),
           Text("Sched", style: TextStyle(color: Colors.white)),
         ],
-        color: Colors.white,
-        circleColor: Colors.white,
+        color: AppColors.primaryBlueDark,
+        circleColor: AppColors.secondaryGold,
         height: 60,
-        circleWidth: 60,
+        circleWidth: 62,
         activeIndex: currentIndex,
         onTap: (index) {
           switch (index) {
@@ -78,18 +80,18 @@ class ScaffoldWithNavBar extends StatelessWidget {
           bottomRight: Radius.circular(24),
           bottomLeft: Radius.circular(24),
         ),
-        shadowColor: Colors.yellow.shade800,
-        circleShadowColor: Colors.yellow.shade800,
-        elevation: 4,
+        shadowColor: AppColors.secondaryGold.withValues(alpha: 0.4),
+        circleShadowColor: AppColors.secondaryGoldDark.withValues(alpha: 0.5),
+        elevation: 6,
         gradient: const LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [Colors.blue, Colors.red],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.primaryBlueDark, AppColors.accentMaroon],
         ),
         circleGradient: const LinearGradient(
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-          colors: [Colors.blue, Colors.red],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.secondaryGold, AppColors.secondaryGoldDark],
         ),
       ),
     );
@@ -99,6 +101,12 @@ class ScaffoldWithNavBar extends StatelessWidget {
 final appRouter = GoRouter(
   initialLocation: '/matches',
   routes: [
+    // ── Fullscreen timer: outside shell so nav bar is hidden ──────────────
+    GoRoute(
+      path: '/timer/fullscreen',
+      builder: (context, state) => const FullscreenTimerScreen(),
+    ),
+    // ── Main shell with bottom nav ────────────────────────────────────────
     ShellRoute(
       builder: (context, state, child) {
         return ScaffoldWithNavBar(child: child);
