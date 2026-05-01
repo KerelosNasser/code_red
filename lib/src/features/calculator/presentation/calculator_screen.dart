@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import '../../../shared/widgets/dara_app_bar.dart';
+import '../../../shared/widgets/dara_card.dart';
+import '../../../core/theme/app_colors.dart';
 import '../providers/calculator_provider.dart';
 import '../data/game_rules.dart';
 import '../models/rule.dart';
@@ -15,8 +18,9 @@ class CalculatorScreen extends ConsumerWidget {
     final totalScore = notifier.totalScore;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Score Calculator'),
+      backgroundColor: AppColors.background,
+      appBar: DaraAppBar(
+        title: 'SCORE CALCULATOR',
         actions: [
           IconButton(
             icon: const Icon(Icons.refresh),
@@ -61,9 +65,13 @@ class _ScoreSummary extends StatelessWidget {
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: const BorderRadius.only(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.primaryBlueDark, AppColors.accentMaroon],
+        ),
+        borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32),
           bottomRight: Radius.circular(32),
         ),
@@ -149,17 +157,11 @@ class _RuleItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12.0),
-      child: Card(
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(12),
-          side: BorderSide(color: Colors.grey[200]!),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            children: [
-              Expanded(
+      child: DaraCard(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -201,18 +203,20 @@ class _RuleItem extends StatelessWidget {
                     ),
                     _ControlBtn(
                       icon: Icons.add,
-                      onPressed: value < rule.maxValue ? () => onChanged(1) : null,
-                    ),
-                  ],
-                )
-              else if (rule.type == RuleType.toggle)
-                Switch(
-                  value: value > 0,
-                  onChanged: (val) => onChanged(val ? 1 : -1),
-                  activeColor: Theme.of(context).primaryColor,
-                ),
-            ],
-          ),
+                  ),
+                  _ControlBtn(
+                    icon: Icons.add,
+                    onPressed: value < rule.maxValue ? () => onChanged(1) : null,
+                  ),
+                ],
+              )
+            else if (rule.type == RuleType.toggle)
+              Switch(
+                value: value > 0,
+                onChanged: (val) => onChanged(val ? 1 : -1),
+                activeColor: AppColors.secondaryGold,
+              ),
+          ],
         ),
       ),
     );
@@ -231,8 +235,8 @@ class _ControlBtn extends StatelessWidget {
       onPressed: onPressed,
       icon: Icon(icon),
       style: IconButton.styleFrom(
-        backgroundColor: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-        foregroundColor: Theme.of(context).primaryColor,
+        backgroundColor: AppColors.secondaryGold.withValues(alpha: 0.1),
+        foregroundColor: AppColors.secondaryGoldDark,
         disabledBackgroundColor: Colors.grey[100],
         disabledForegroundColor: Colors.grey[400],
       ),

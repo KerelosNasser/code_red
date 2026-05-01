@@ -7,6 +7,7 @@ import '../providers/timer_provider.dart';
 import '../providers/presets_provider.dart';
 import '../models/timer_preset.dart';
 import '../../../core/theme/app_colors.dart';
+import '../../../shared/widgets/dara_app_bar.dart';
 
 class TimerScreen extends ConsumerWidget {
   const TimerScreen({super.key});
@@ -24,8 +25,9 @@ class TimerScreen extends ConsumerWidget {
             : AppColors.primaryBlue;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Timer'),
+      backgroundColor: AppColors.background,
+      appBar: DaraAppBar(
+        title: 'TIMER',
         actions: [
           IconButton(
             icon: const Icon(Icons.fullscreen_rounded),
@@ -217,13 +219,44 @@ class _TimerDisplay extends StatelessWidget {
       alignment: alignment,
       child: Tooltip(
         message: tooltip,
-        child: FloatingActionButton.small(
-          heroTag: mode.toString(),
-          elevation: isActive ? 6 : 0,
-          backgroundColor: isActive ? AppColors.secondaryGold : AppColors.cardBg,
-          foregroundColor: isActive ? Colors.white : AppColors.primaryBlueDark,
-          onPressed: () => onModeChanged(mode),
-          child: Icon(icon),
+        child: GestureDetector(
+          onTap: () => onModeChanged(mode),
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 200),
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: isActive
+                  ? const LinearGradient(
+                      colors: [AppColors.secondaryGold, AppColors.secondaryGoldDark],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    )
+                  : null,
+              color: isActive ? null : AppColors.cardBg,
+              boxShadow: isActive
+                  ? [
+                      BoxShadow(
+                        color: AppColors.secondaryGold.withValues(alpha: 0.4),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
+                      )
+                    ]
+                  : [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.05),
+                        blurRadius: 4,
+                        offset: const Offset(0, 2),
+                      )
+                    ],
+            ),
+            child: Icon(
+              icon,
+              size: 20,
+              color: isActive ? Colors.white : AppColors.primaryBlueDark,
+            ),
+          ),
         ),
       ),
     );
@@ -491,14 +524,39 @@ class _Controls extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         // Play / Pause
-        FilledButton.icon(
-          onPressed: isRunning ? notifier.pause : notifier.start,
-          style: FilledButton.styleFrom(
-            backgroundColor: isRunning ? AppColors.timerWarning : AppColors.primaryBlue,
-            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(32),
+            gradient: LinearGradient(
+              colors: isRunning
+                  ? [AppColors.timerWarning, AppColors.timerWarning.withOpacity(0.8)]
+                  : [AppColors.secondaryGold, AppColors.secondaryGoldDark],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: (isRunning ? AppColors.timerWarning : AppColors.secondaryGold).withValues(alpha: 0.4),
+                blurRadius: 8,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-          icon: Icon(isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded),
-          label: Text(isRunning ? 'PAUSE' : 'START'),
+          child: ElevatedButton.icon(
+            onPressed: isRunning ? notifier.pause : notifier.start,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.transparent,
+              shadowColor: Colors.transparent,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 18),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+            ),
+            icon: Icon(isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded),
+            label: Text(
+              isRunning ? 'PAUSE' : 'START',
+              style: const TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+            ),
+          ),
         ),
         const SizedBox(width: 16),
         // Reset (show for all except clock)

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/dara_app_bar.dart';
 import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -45,18 +46,7 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(
-          'SCHEDULE',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.primaryBlue,
-                letterSpacing: 1.2,
-              ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
+      appBar: const DaraAppBar(title: 'SCHEDULE'),
       body: Column(
         children: [
           Padding(
@@ -119,15 +109,22 @@ class _ToggleButton extends StatelessWidget {
         duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.symmetric(vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? AppColors.primaryBlue : Colors.white,
+          color: isSelected ? null : AppColors.surface,
+          gradient: isSelected
+              ? const LinearGradient(
+                  colors: [AppColors.secondaryGold, AppColors.secondaryGoldDark],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                )
+              : null,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? AppColors.primaryBlue : Colors.grey[300]!,
+            color: isSelected ? Colors.transparent : AppColors.divider,
           ),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.primaryBlue.withOpacity(0.3),
+                    color: AppColors.secondaryGoldDark.withValues(alpha: 0.3),
                     blurRadius: 8,
                     offset: const Offset(0, 4),
                   )
@@ -138,7 +135,7 @@ class _ToggleButton extends StatelessWidget {
           child: Text(
             label,
             style: TextStyle(
-              color: isSelected ? Colors.white : Colors.grey[600],
+              color: isSelected ? Colors.white : AppColors.textPrimary,
               fontWeight: FontWeight.bold,
             ),
           ),

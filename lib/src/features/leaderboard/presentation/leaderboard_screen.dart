@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import '../../../shared/widgets/dara_app_bar.dart';
+import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../timer/providers/timer_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -102,8 +104,8 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: const Text('Service Rundown'),
+      appBar: DaraAppBar(
+        title: 'SERVICE RUNDOWN',
         actions: [
           IconButton(
             icon: const Icon(Icons.restart_alt_rounded),
@@ -249,40 +251,59 @@ class _SummaryBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final progress = total > 0 ? done / total : 0.0;
+    final totalFormatted = '${totalMinutes ~/ 60}h ${totalMinutes % 60}m';
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      color: AppColors.primaryBlueDark,
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [AppColors.primaryBlueDark, AppColors.accentMaroon],
+        ),
+        borderRadius: BorderRadius.only(
+          bottomLeft: Radius.circular(32),
+          bottomRight: Radius.circular(32),
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 12, 20, 24),
       child: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '$done / $total segments done',
-                style: const TextStyle(color: Colors.white70, fontSize: 13),
-              ),
-              Row(
-                children: [
-                  const Icon(Icons.schedule_rounded, color: Colors.white54, size: 14),
-                  const SizedBox(width: 4),
-                  Text(
-                    '${totalMinutes ~/ 60}h ${totalMinutes % 60}m total',
-                    style: const TextStyle(color: Colors.white70, fontSize: 13),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: Colors.white.withValues(alpha: 0.15),
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                const Text(
+                  'TOTAL DURATION',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
                   ),
-                ],
-              ),
-            ],
+                ),
+                Text(
+                  totalFormatted,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: 16),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: Colors.white12,
-              valueColor: AlwaysStoppedAnimation<Color>(
-                progress == 1.0 ? AppColors.secondaryGold : AppColors.secondaryGold,
-              ),
+              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondaryGold),
               minHeight: 6,
             ),
           ),
@@ -319,20 +340,7 @@ class _SegmentCard extends StatelessWidget {
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 250),
-        decoration: BoxDecoration(
-          color: isActive
-              ? color.withValues(alpha: 0.08)
-              : isDone
-                  ? AppColors.background
-                  : AppColors.cardBg,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: isActive ? color : AppColors.divider,
-            width: isActive ? 2 : 1,
-          ),
-        ),
+      child: DaraCard(
         child: ListTile(
           contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
           leading: _StatusDot(status: segment.status, color: color, onTap: onStatusTap),
@@ -358,24 +366,21 @@ class _SegmentCard extends StatelessWidget {
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Launch timer button
               IconButton(
                 icon: Icon(
                   Icons.timer_outlined,
                   color: isDone ? AppColors.textSecondary : AppColors.primaryBlue,
                   size: 20,
                 ),
-                tooltip: 'Load in Timer (${segment.durationMinutes} min)',
+                tooltip: 'Load in Timer',
                 onPressed: isDone ? null : onLaunchTimer,
                 padding: const EdgeInsets.all(8),
               ),
-              // Delete
               IconButton(
                 icon: const Icon(Icons.close_rounded, size: 16, color: AppColors.textSecondary),
                 onPressed: onDelete,
                 padding: const EdgeInsets.all(8),
               ),
-              // Drag handle
               const Icon(Icons.drag_handle_rounded, color: AppColors.textSecondary),
             ],
           ),

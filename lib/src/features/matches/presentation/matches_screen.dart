@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../shared/widgets/dara_app_bar.dart';
 import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
 
@@ -57,18 +58,7 @@ class MatchesScreen extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
-        title: Text(
-          'MATCHES',
-          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                color: AppColors.primaryBlue,
-                letterSpacing: 1.2,
-              ),
-        ),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        centerTitle: true,
-      ),
+      appBar: const DaraAppBar(title: 'MATCHES'),
       body: ListView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: mockMatches.length,
