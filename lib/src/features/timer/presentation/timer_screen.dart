@@ -178,7 +178,7 @@ class _TimerDisplay extends StatelessWidget {
                     ),
                   ),
                 Padding(
-                  padding: EdgeInsets.all(showArc ? 40 : 0),
+                  padding: EdgeInsets.all(showArc ? 30 : 0),
                   child:
                       Text(
                             _displayText,
@@ -327,7 +327,7 @@ class _ArcPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = AppColors.error
+        ..color = AppColors.textPrimary
         ..style = PaintingStyle.stroke
         ..strokeWidth = 12,
     );
@@ -451,6 +451,7 @@ class _PresetsPanel extends StatelessWidget {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        backgroundColor: AppColors.cardBg,
         title: const Text('New Preset'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
@@ -539,8 +540,9 @@ class _PreServicePicker extends StatelessWidget {
             picked.hour,
             picked.minute,
           );
-          if (target.isBefore(now))
+          if (target.isBefore(now)) {
             target = target.add(const Duration(days: 1));
+          }
           onPick(target);
         }
       },
