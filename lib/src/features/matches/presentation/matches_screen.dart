@@ -194,15 +194,14 @@ class _AllianceColumn extends StatelessWidget {
             ),
           ),
         const SizedBox(height: 4),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: 8,
+          runSpacing: 4,
           children: teams
-              .map((t) => Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 4),
-                    child: Text(
-                      t,
-                      style: const TextStyle(fontWeight: FontWeight.w600),
-                    ),
+              .map((t) => Text(
+                    t,
+                    style: const TextStyle(fontWeight: FontWeight.w600),
                   ))
               .toList(),
         ),

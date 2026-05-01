@@ -37,14 +37,49 @@ class ServiceSegment {
 // ─────────────────────────────────────────────────────────────────────────────
 
 List<ServiceSegment> _defaultRundown() => [
-      ServiceSegment(id: '1', name: 'Welcome & Announcements', durationMinutes: 10, type: SegmentType.announcements),
-      ServiceSegment(id: '2', name: 'Worship Set', durationMinutes: 25, type: SegmentType.worship),
-      ServiceSegment(id: '3', name: 'Offering', durationMinutes: 5, type: SegmentType.offering),
-      ServiceSegment(id: '4', name: 'Message', durationMinutes: 45, type: SegmentType.message),
-      ServiceSegment(id: '5', name: 'Prayer & Ministry', durationMinutes: 15, type: SegmentType.prayer),
-      ServiceSegment(id: '6', name: 'Altar Call', durationMinutes: 10, type: SegmentType.prayer),
-      ServiceSegment(id: '7', name: 'Closing Worship', durationMinutes: 10, type: SegmentType.worship),
-    ];
+  ServiceSegment(
+    id: '1',
+    name: 'Welcome & Announcements',
+    durationMinutes: 10,
+    type: SegmentType.announcements,
+  ),
+  ServiceSegment(
+    id: '2',
+    name: 'Worship Set',
+    durationMinutes: 25,
+    type: SegmentType.worship,
+  ),
+  ServiceSegment(
+    id: '3',
+    name: 'Offering',
+    durationMinutes: 5,
+    type: SegmentType.offering,
+  ),
+  ServiceSegment(
+    id: '4',
+    name: 'Message',
+    durationMinutes: 45,
+    type: SegmentType.message,
+  ),
+  ServiceSegment(
+    id: '5',
+    name: 'Prayer & Ministry',
+    durationMinutes: 15,
+    type: SegmentType.prayer,
+  ),
+  ServiceSegment(
+    id: '6',
+    name: 'Altar Call',
+    durationMinutes: 10,
+    type: SegmentType.prayer,
+  ),
+  ServiceSegment(
+    id: '7',
+    name: 'Closing Worship',
+    durationMinutes: 10,
+    type: SegmentType.worship,
+  ),
+];
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Screen
@@ -66,9 +101,11 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
     _segments = _defaultRundown();
   }
 
-  int get _totalMinutes => _segments.fold(0, (sum, s) => sum + s.durationMinutes);
+  int get _totalMinutes =>
+      _segments.fold(0, (sum, s) => sum + s.durationMinutes);
 
-  int get _doneCount => _segments.where((s) => s.status == SegmentStatus.done).length;
+  int get _doneCount =>
+      _segments.where((s) => s.status == SegmentStatus.done).length;
 
   void _advanceStatus(ServiceSegment seg) {
     setState(() {
@@ -88,7 +125,8 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   }
 
   void _launchTimer(ServiceSegment seg) {
-    ref.read(timerNotifierProvider.notifier)
+    ref
+        .read(timerNotifierProvider.notifier)
         .setPreset(seg.durationMinutes * 60, label: seg.name);
     context.go('/timer');
   }
@@ -132,7 +170,12 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
           // ── Drag-to-reorder list ────────────────────────────────────────
           Expanded(
             child: ReorderableListView.builder(
-              padding: EdgeInsets.fromLTRB(context.scaleWidth(16), 8, context.scaleWidth(16), 80),
+              padding: EdgeInsets.fromLTRB(
+                context.scaleWidth(16),
+                8,
+                context.scaleWidth(16),
+                80,
+              ),
               itemCount: _segments.length,
               onReorder: (oldIndex, newIndex) {
                 setState(() {
@@ -144,12 +187,17 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
               itemBuilder: (context, index) {
                 final seg = _segments[index];
                 return _SegmentCard(
-                  segment: seg,
-                  index: index + 1,
-                  onStatusTap: () => _advanceStatus(seg),
-                  onLaunchTimer: () => _launchTimer(seg),
-                  onDelete: () => setState(() => _segments.removeWhere((s) => s.id == seg.id)),
-                ).animate(key: ValueKey(seg.id)).fadeIn(delay: (60 * index).ms).slideX(begin: 0.05);
+                      segment: seg,
+                      index: index + 1,
+                      onStatusTap: () => _advanceStatus(seg),
+                      onLaunchTimer: () => _launchTimer(seg),
+                      onDelete: () => setState(
+                        () => _segments.removeWhere((s) => s.id == seg.id),
+                      ),
+                    )
+                    .animate(key: ValueKey(seg.id))
+                    .fadeIn(delay: (60 * index).ms)
+                    .slideX(begin: 0.05);
               },
             ),
           ),
@@ -182,23 +230,27 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
               TextField(
                 controller: durationCtrl,
                 keyboardType: TextInputType.number,
-                decoration: const InputDecoration(labelText: 'Duration (minutes)'),
+                decoration: const InputDecoration(
+                  labelText: 'Duration (minutes)',
+                ),
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<SegmentType>(
                 initialValue: selectedType,
                 decoration: const InputDecoration(labelText: 'Type'),
                 items: SegmentType.values
-                    .map((t) => DropdownMenuItem(
-                          value: t,
-                          child: Row(
-                            children: [
-                              Icon(_iconFor(t), size: 16, color: _colorFor(t)),
-                              const SizedBox(width: 8),
-                              Text(_labelFor(t)),
-                            ],
-                          ),
-                        ))
+                    .map(
+                      (t) => DropdownMenuItem(
+                        value: t,
+                        child: Row(
+                          children: [
+                            Icon(_iconFor(t), size: 16, color: _colorFor(t)),
+                            const SizedBox(width: 8),
+                            Text(_labelFor(t)),
+                          ],
+                        ),
+                      ),
+                    )
                     .toList(),
                 onChanged: (v) => setDialogState(() => selectedType = v!),
               ),
@@ -215,12 +267,14 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                 final mins = int.tryParse(durationCtrl.text) ?? 10;
                 if (name.isNotEmpty) {
                   setState(() {
-                    _segments.add(ServiceSegment(
-                      id: DateTime.now().millisecondsSinceEpoch.toString(),
-                      name: name,
-                      durationMinutes: mins,
-                      type: selectedType,
-                    ));
+                    _segments.add(
+                      ServiceSegment(
+                        id: DateTime.now().millisecondsSinceEpoch.toString(),
+                        name: name,
+                        durationMinutes: mins,
+                        type: selectedType,
+                      ),
+                    );
                   });
                 }
                 Navigator.pop(ctx);
@@ -266,7 +320,12 @@ class _SummaryBar extends StatelessWidget {
           bottomRight: Radius.circular(32),
         ),
       ),
-      padding: EdgeInsets.fromLTRB(context.scaleWidth(20), 12, context.scaleWidth(20), 24),
+      padding: EdgeInsets.fromLTRB(
+        context.scaleWidth(20),
+        12,
+        context.scaleWidth(20),
+        24,
+      ),
       child: Column(
         children: [
           Container(
@@ -304,7 +363,9 @@ class _SummaryBar extends StatelessWidget {
             child: LinearProgressIndicator(
               value: progress,
               backgroundColor: Colors.white12,
-              valueColor: const AlwaysStoppedAnimation<Color>(AppColors.secondaryGold),
+              valueColor: const AlwaysStoppedAnimation<Color>(
+                AppColors.secondaryGold,
+              ),
               minHeight: 6,
             ),
           ),
@@ -343,24 +404,41 @@ class _SegmentCard extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 10),
       child: DaraCard(
         child: ListTile(
-          contentPadding: EdgeInsets.symmetric(horizontal: context.scaleWidth(14), vertical: 6),
-          leading: _StatusDot(status: segment.status, color: color, onTap: onStatusTap),
+          contentPadding: EdgeInsets.symmetric(
+            horizontal: context.scaleWidth(10),
+            vertical: 0,
+          ),
+          leading: _StatusDot(
+            status: segment.status,
+            color: color,
+            onTap: onStatusTap,
+          ),
           title: Text(
             segment.name,
             style: TextStyle(
               fontWeight: isActive ? FontWeight.bold : FontWeight.w600,
-              color: isDone ? AppColors.textSecondary : AppColors.primaryBlueDark,
+              color: isDone ? AppColors.textSecondary : AppColors.primaryBlue,
               decoration: isDone ? TextDecoration.lineThrough : null,
-              fontSize: context.scaleFont(15),
+              fontSize: context.scaleFont(14),
             ),
           ),
           subtitle: Row(
             children: [
-              Icon(_iconFor(segment.type), size: context.scaleFont(12), color: color),
-              const SizedBox(width: 4),
-              Text(
-                '${_labelFor(segment.type)} · ${segment.durationMinutes} min',
-                style: TextStyle(color: AppColors.textSecondary, fontSize: context.scaleFont(12)),
+              Icon(
+                _iconFor(segment.type),
+                size: context.scaleFont(12),
+                color: color,
+              ),
+              const SizedBox(width: 1),
+              Expanded(
+                child: Text(
+                  '${_labelFor(segment.type)} · ${segment.durationMinutes} min',
+                  style: TextStyle(
+                    color: AppColors.timerCritical,
+                    fontSize: context.scaleFont(12),
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
               ),
             ],
           ),
@@ -370,19 +448,15 @@ class _SegmentCard extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   Icons.timer_outlined,
-                  color: isDone ? AppColors.textSecondary : AppColors.primaryBlue,
+                  color: isDone
+                      ? AppColors.timerCritical
+                      : AppColors.primaryBlue,
                   size: 20,
                 ),
                 tooltip: 'Load in Timer',
                 onPressed: isDone ? null : onLaunchTimer,
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(1),
               ),
-              IconButton(
-                icon: const Icon(Icons.close_rounded, size: 16, color: AppColors.textSecondary),
-                onPressed: onDelete,
-                padding: const EdgeInsets.all(8),
-              ),
-              const Icon(Icons.drag_handle_rounded, color: AppColors.textSecondary),
             ],
           ),
         ),
@@ -396,7 +470,11 @@ class _StatusDot extends StatelessWidget {
   final Color color;
   final VoidCallback onTap;
 
-  const _StatusDot({required this.status, required this.color, required this.onTap});
+  const _StatusDot({
+    required this.status,
+    required this.color,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -404,18 +482,18 @@ class _StatusDot extends StatelessWidget {
       onTap: onTap,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        width: 36,
-        height: 36,
+        width: 26,
+        height: 26,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           color: switch (status) {
-            SegmentStatus.pending => Colors.transparent,
+            SegmentStatus.pending => AppColors.primaryBlueDark,
             SegmentStatus.active => color,
             SegmentStatus.done => AppColors.success.withValues(alpha: 0.15),
           },
           border: Border.all(
             color: switch (status) {
-              SegmentStatus.pending => AppColors.divider,
+              SegmentStatus.pending => AppColors.error,
               SegmentStatus.active => color,
               SegmentStatus.done => AppColors.success,
             },
@@ -424,7 +502,7 @@ class _StatusDot extends StatelessWidget {
         ),
         child: Icon(
           switch (status) {
-            SegmentStatus.pending => Icons.circle_outlined,
+            SegmentStatus.pending => Icons.watch_later_outlined,
             SegmentStatus.active => Icons.play_arrow_rounded,
             SegmentStatus.done => Icons.check_rounded,
           },
@@ -445,28 +523,28 @@ class _StatusDot extends StatelessWidget {
 // ─────────────────────────────────────────────────────────────────────────────
 
 Color _colorFor(SegmentType t) => switch (t) {
-      SegmentType.worship => AppColors.primaryBlue,
-      SegmentType.message => AppColors.accentMaroon,
-      SegmentType.prayer => const Color(0xFF6B4DA0),
-      SegmentType.offering => AppColors.secondaryGold,
-      SegmentType.announcements => const Color(0xFF2E7D6B),
-      SegmentType.other => AppColors.textSecondary,
-    };
+  SegmentType.worship => AppColors.primaryBlue,
+  SegmentType.message => AppColors.accentMaroon,
+  SegmentType.prayer => const Color(0xFF6B4DA0),
+  SegmentType.offering => AppColors.secondaryGold,
+  SegmentType.announcements => const Color(0xFF2E7D6B),
+  SegmentType.other => AppColors.textSecondary,
+};
 
 IconData _iconFor(SegmentType t) => switch (t) {
-      SegmentType.worship => Icons.music_note_rounded,
-      SegmentType.message => Icons.menu_book_rounded,
-      SegmentType.prayer => Icons.volunteer_activism_rounded,
-      SegmentType.offering => Icons.favorite_rounded,
-      SegmentType.announcements => Icons.campaign_rounded,
-      SegmentType.other => Icons.more_horiz_rounded,
-    };
+  SegmentType.worship => Icons.music_note_rounded,
+  SegmentType.message => Icons.menu_book_rounded,
+  SegmentType.prayer => Icons.volunteer_activism_rounded,
+  SegmentType.offering => Icons.favorite_rounded,
+  SegmentType.announcements => Icons.campaign_rounded,
+  SegmentType.other => Icons.more_horiz_rounded,
+};
 
 String _labelFor(SegmentType t) => switch (t) {
-      SegmentType.worship => 'Worship',
-      SegmentType.message => 'Message',
-      SegmentType.prayer => 'Prayer',
-      SegmentType.offering => 'Offering',
-      SegmentType.announcements => 'Announcements',
-      SegmentType.other => 'Other',
-    };
+  SegmentType.worship => 'Worship',
+  SegmentType.message => 'Message',
+  SegmentType.prayer => 'Prayer',
+  SegmentType.offering => 'Offering',
+  SegmentType.announcements => 'Announcements',
+  SegmentType.other => 'Other',
+};
