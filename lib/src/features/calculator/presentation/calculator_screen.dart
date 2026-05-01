@@ -59,7 +59,7 @@ class CalculatorScreen extends ConsumerWidget {
 class _ScoreSummary extends StatelessWidget {
   final int totalScore;
 
-  const _ScoreSummary({super.key, required this.totalScore});
+  const _ScoreSummary({required this.totalScore});
 
   @override
   Widget build(BuildContext context) {
@@ -212,7 +212,7 @@ class _RuleItem extends StatelessWidget {
               Switch(
                 value: value > 0,
                 onChanged: (val) => onChanged(val ? 1 : -1),
-                activeColor: AppColors.secondaryGold,
+                activeThumbColor: AppColors.secondaryGold,
               ),
           ],
         ),
@@ -225,7 +225,7 @@ class _ControlBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback? onPressed;
 
-  const _ControlBtn({super.key, required this.icon, this.onPressed});
+  const _ControlBtn({required this.icon, this.onPressed});
 
   @override
   Widget build(BuildContext context) {

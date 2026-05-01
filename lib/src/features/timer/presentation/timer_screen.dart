@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -22,8 +21,8 @@ class TimerScreen extends ConsumerWidget {
     final displayColor = timerState.isCritical
         ? AppColors.timerCritical
         : timerState.isWarning
-            ? AppColors.timerWarning
-            : AppColors.primaryBlue;
+        ? AppColors.timerWarning
+        : AppColors.primaryBlue;
 
     return Scaffold(
       backgroundColor: AppColors.background,
@@ -47,7 +46,7 @@ class TimerScreen extends ConsumerWidget {
                 children: [
                   const SizedBox(height: 16),
                   _TimerDisplay(
-                    state: timerState, 
+                    state: timerState,
                     color: displayColor,
                     onModeChanged: notifier.setMode,
                   ),
@@ -56,9 +55,9 @@ class TimerScreen extends ConsumerWidget {
                     Text(
                       timerState.presetLabel!,
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: displayColor,
-                            letterSpacing: 1.5,
-                          ),
+                        color: displayColor,
+                        letterSpacing: 1.5,
+                      ),
                     ).animate().fadeIn(),
                   const SizedBox(height: 24),
                   // ── Presets (countdown only) ──────────────────────────
@@ -67,10 +66,13 @@ class TimerScreen extends ConsumerWidget {
                     if (timerState.mode == TimerMode.countdown)
                       _PresetsPanel(
                         presets: presets,
-                        activeSeconds: timerState.durationRemaining == timerState.totalDuration
+                        activeSeconds:
+                            timerState.durationRemaining ==
+                                timerState.totalDuration
                             ? timerState.totalDuration
                             : -1,
-                        onSelect: (p) => notifier.setPreset(p.seconds, label: p.label),
+                        onSelect: (p) =>
+                            notifier.setPreset(p.seconds, label: p.label),
                         notifier: ref.read(timerPresetsProvider.notifier),
                       ),
                     if (timerState.mode == TimerMode.preService)
@@ -83,7 +85,7 @@ class TimerScreen extends ConsumerWidget {
                   // ── Controls ─────────────────────────────────────────
                   if (timerState.mode != TimerMode.clock)
                     _Controls(state: timerState, notifier: notifier),
-                  const SizedBox(height: 80),
+                  const SizedBox(height: 24),
                 ],
               ),
             ),
@@ -93,7 +95,6 @@ class TimerScreen extends ConsumerWidget {
     );
   }
 }
-
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Timer Display (circular arc + digits)
@@ -139,16 +140,22 @@ class _TimerDisplay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showArc = state.mode == TimerMode.countdown ||
-        state.mode == TimerMode.preService;
+    final showArc =
+        state.mode == TimerMode.countdown || state.mode == TimerMode.preService;
 
     return LayoutBuilder(
       builder: (context, constraints) {
         // Ensure the timer fits on smaller screens
-        final maxAllowed = context.isSmallPhone ? context.screenWidth - 32 : 320.0;
-        final maxSize = constraints.maxWidth < maxAllowed ? constraints.maxWidth : maxAllowed;
-        final arcSize = maxSize * 0.75; // Timer arc is 75% of the total area to leave room for buttons
-        
+        final maxAllowed = context.isSmallPhone
+            ? context.screenWidth - 32
+            : 320.0;
+        final maxSize = constraints.maxWidth < maxAllowed
+            ? constraints.maxWidth
+            : maxAllowed;
+        final arcSize =
+            maxSize *
+            0.75; // Timer arc is 75% of the total area to leave room for buttons
+
         return Center(
           child: SizedBox(
             width: maxSize,
@@ -172,24 +179,29 @@ class _TimerDisplay extends StatelessWidget {
                   ),
                 Padding(
                   padding: EdgeInsets.all(showArc ? 40 : 0),
-                  child: Text(
-                    _displayText,
-                    style: TextStyle(
-                      fontFamily: 'Courier',
-                      fontSize: state.mode == TimerMode.clock ? maxSize * 0.13 : maxSize * 0.16,
-                      fontWeight: FontWeight.bold,
-                      color: color,
-                      fontFeatures: const [FontFeature.tabularFigures()],
-                    ),
-                  )
-                      .animate(key: ValueKey(state.isCritical))
-                      .then()
-                      .shimmer(
-                        duration: state.isCritical ? 800.ms : 0.ms,
-                        color: state.isCritical
-                            ? AppColors.timerCritical.withValues(alpha: 0.6)
-                            : Colors.transparent,
-                      ),
+                  child:
+                      Text(
+                            _displayText,
+                            style: TextStyle(
+                              fontFamily: 'Courier',
+                              fontSize: state.mode == TimerMode.clock
+                                  ? maxSize * 0.13
+                                  : maxSize * 0.16,
+                              fontWeight: FontWeight.bold,
+                              color: color,
+                              fontFeatures: const [
+                                FontFeature.tabularFigures(),
+                              ],
+                            ),
+                          )
+                          .animate(key: ValueKey(state.isCritical))
+                          .then()
+                          .shimmer(
+                            duration: state.isCritical ? 800.ms : 0.ms,
+                            color: state.isCritical
+                                ? AppColors.timerCritical.withValues(alpha: 0.6)
+                                : Colors.transparent,
+                          ),
                 ),
                 if (state.status == TimerStateStatus.finished)
                   Positioned(
@@ -197,25 +209,55 @@ class _TimerDisplay extends StatelessWidget {
                     child: Text(
                       '✓ TIME\'S UP',
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            color: AppColors.timerCritical,
-                            letterSpacing: 2,
-                          ),
+                        color: AppColors.timerCritical,
+                        letterSpacing: 2,
+                      ),
                     ).animate().fadeIn().scale(),
                   ),
                 // Mode Floating Buttons
-                _buildModeButton(context, TimerMode.countdown, const Alignment(-0.95, -0.95), Icons.timer_outlined, 'Countdown'),
-                _buildModeButton(context, TimerMode.stopwatch, const Alignment(0.95, -0.95), Icons.av_timer_rounded, 'Stopwatch'),
-                _buildModeButton(context, TimerMode.clock, const Alignment(-0.95, 0.95), Icons.access_time_rounded, 'Clock'),
-                _buildModeButton(context, TimerMode.preService, const Alignment(0.95, 0.95), Icons.alarm_rounded, 'Pre-Service'),
+                _buildModeButton(
+                  context,
+                  TimerMode.countdown,
+                  const Alignment(-0.95, -0.95),
+                  Icons.timer_outlined,
+                  'Countdown',
+                ),
+                _buildModeButton(
+                  context,
+                  TimerMode.stopwatch,
+                  const Alignment(0.95, -0.95),
+                  Icons.av_timer_rounded,
+                  'Stopwatch',
+                ),
+                _buildModeButton(
+                  context,
+                  TimerMode.clock,
+                  const Alignment(-0.95, 0.95),
+                  Icons.access_time_rounded,
+                  'Clock',
+                ),
+                _buildModeButton(
+                  context,
+                  TimerMode.preService,
+                  const Alignment(0.95, 0.95),
+                  Icons.alarm_rounded,
+                  'Pre-Service',
+                ),
               ],
             ),
           ),
         );
-      }
+      },
     );
   }
 
-  Widget _buildModeButton(BuildContext context, TimerMode mode, Alignment alignment, IconData icon, String tooltip) {
+  Widget _buildModeButton(
+    BuildContext context,
+    TimerMode mode,
+    Alignment alignment,
+    IconData icon,
+    String tooltip,
+  ) {
     final isActive = state.mode == mode;
     return Align(
       alignment: alignment,
@@ -231,7 +273,10 @@ class _TimerDisplay extends StatelessWidget {
               shape: BoxShape.circle,
               gradient: isActive
                   ? const LinearGradient(
-                      colors: [AppColors.secondaryGold, AppColors.secondaryGoldDark],
+                      colors: [
+                        AppColors.secondaryGold,
+                        AppColors.secondaryGoldDark,
+                      ],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     )
@@ -243,14 +288,14 @@ class _TimerDisplay extends StatelessWidget {
                         color: AppColors.secondaryGold.withValues(alpha: 0.4),
                         blurRadius: 8,
                         offset: const Offset(0, 4),
-                      )
+                      ),
                     ]
                   : [
                       BoxShadow(
                         color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 4,
                         offset: const Offset(0, 2),
-                      )
+                      ),
                     ],
             ),
             child: Icon(
@@ -282,9 +327,9 @@ class _ArcPainter extends CustomPainter {
       center,
       radius,
       Paint()
-        ..color = AppColors.divider
+        ..color = AppColors.error
         ..style = PaintingStyle.stroke
-        ..strokeWidth = 8,
+        ..strokeWidth = 12,
     );
 
     // Progress arc
@@ -332,17 +377,14 @@ class _PresetsPanel extends StatelessWidget {
       children: [
         Row(
           children: [
-            Text(
-              'PRESETS',
-              style: Theme.of(context).textTheme.labelLarge,
-            ),
+            Text('PRESETS', style: Theme.of(context).textTheme.labelLarge),
             const Spacer(),
             TextButton.icon(
               onPressed: () => _showAddDialog(context),
               icon: const Icon(Icons.add, size: 16),
               label: const Text('Add'),
               style: TextButton.styleFrom(
-                foregroundColor: AppColors.secondaryGold,
+                foregroundColor: AppColors.primaryBlueDark,
                 padding: EdgeInsets.zero,
               ),
             ),
@@ -350,7 +392,7 @@ class _PresetsPanel extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         Wrap(
-          spacing: 8,
+          spacing: 4,
           runSpacing: 8,
           children: presets.asMap().entries.map((entry) {
             final i = entry.key;
@@ -366,7 +408,9 @@ class _PresetsPanel extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w600,
-                      color: selected ? Colors.white : AppColors.primaryBlueDark,
+                      color: selected
+                          ? AppColors.surface
+                          : AppColors.primaryBlueDark,
                     ),
                   ),
                   Text(
@@ -374,8 +418,8 @@ class _PresetsPanel extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 10,
                       color: selected
-                          ? Colors.white70
-                          : AppColors.textSecondary,
+                          ? AppColors.surface
+                          : AppColors.accentMaroon,
                     ),
                   ),
                 ],
@@ -385,9 +429,11 @@ class _PresetsPanel extends StatelessWidget {
               onPressed: () => onSelect(p),
               onDeleted: p.isDefault ? null : () => notifier.deletePreset(i),
               backgroundColor: AppColors.cardBg,
-              selectedColor: AppColors.primaryBlue,
+              selectedColor: AppColors.secondaryGoldDark,
               side: BorderSide(
-                color: selected ? AppColors.primaryBlue : AppColors.divider,
+                color: selected
+                    ? AppColors.textSecondary
+                    : AppColors.textSecondary,
               ),
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
             );
@@ -411,10 +457,7 @@ class _PresetsPanel extends StatelessWidget {
           children: [
             TextField(
               controller: labelCtrl,
-              decoration: const InputDecoration(
-                labelText: 'Label',
-                hintText: 'e.g. Altar Call',
-              ),
+              decoration: const InputDecoration(labelText: 'Label'),
             ),
             const SizedBox(height: 12),
             Row(
@@ -489,8 +532,15 @@ class _PreServicePicker extends StatelessWidget {
         );
         if (picked != null) {
           final now = DateTime.now();
-          var target = DateTime(now.year, now.month, now.day, picked.hour, picked.minute);
-          if (target.isBefore(now)) target = target.add(const Duration(days: 1));
+          var target = DateTime(
+            now.year,
+            now.month,
+            now.day,
+            picked.hour,
+            picked.minute,
+          );
+          if (target.isBefore(now))
+            target = target.add(const Duration(days: 1));
           onPick(target);
         }
       },
@@ -532,14 +582,21 @@ class _Controls extends StatelessWidget {
               borderRadius: BorderRadius.circular(32),
               gradient: LinearGradient(
                 colors: isRunning
-                    ? [AppColors.timerWarning, AppColors.timerWarning.withValues(alpha: 0.8)]
+                    ? [
+                        AppColors.timerWarning,
+                        AppColors.timerWarning.withValues(alpha: 0.8),
+                      ]
                     : [AppColors.secondaryGold, AppColors.secondaryGoldDark],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: (isRunning ? AppColors.timerWarning : AppColors.secondaryGold).withValues(alpha: 0.4),
+                  color:
+                      (isRunning
+                              ? AppColors.timerWarning
+                              : AppColors.secondaryGold)
+                          .withValues(alpha: 0.4),
                   blurRadius: 8,
                   offset: const Offset(0, 4),
                 ),
@@ -551,12 +608,17 @@ class _Controls extends StatelessWidget {
                 onTap: isRunning ? notifier.pause : notifier.start,
                 borderRadius: BorderRadius.circular(32),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Icon(
-                        isRunning ? Icons.pause_rounded : Icons.play_arrow_rounded,
+                        isRunning
+                            ? Icons.pause_rounded
+                            : Icons.play_arrow_rounded,
                         color: Colors.white,
                       ),
                       const SizedBox(width: 8),

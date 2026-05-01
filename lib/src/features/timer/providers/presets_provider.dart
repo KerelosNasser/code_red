@@ -17,7 +17,7 @@ class TimerPresetsNotifier extends StateNotifier<List<TimerPreset>> {
       state = kDefaultPresets;
       _persist();
     } else {
-      final list = raw as List;
+      final list = raw;
       state = list
           .map((e) => TimerPreset.fromMap(Map<String, dynamic>.from(e as Map)))
           .toList();
