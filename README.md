@@ -1,10 +1,10 @@
 <div align="center">
 
-<img src="assets/background.jpg" alt="DARA Logo" width="480"/>
+<img src="assets/background.jpg" alt="DaRa Logo" width="480"/>
 
-# DARA — M&P Didaskalia Advanced Robotics Association
+# DaRa — M&P Didaskalia Advanced Robotics Association
 
-**The official mobile companion app for DARA events and church operations**
+**The official mobile companion app for DaRa events and church operations**
 
 [![Flutter](https://img.shields.io/badge/Flutter-3.x-02569B?logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-3.11-0175C2?logo=dart&logoColor=white)](https://dart.dev)
@@ -17,9 +17,9 @@
 
 ## Overview
 
-**DARA** is a Flutter-based mobile application that serves two core purposes:
+**DaRa** is a Flutter-based mobile application that serves two core purposes:
 
-1. **Robotics Competition Management** — Real-time match tracking, score calculation, leaderboard, and event schedules for DARA robotics tournaments.
+1. **Robotics Competition Management** — Real-time match tracking, score calculation, leaderboard, and event schedules for DaRa robotics tournaments.
 
 2. **Church Event Operations** — A hands-on operator tool for the M&P Didaskalia church, enabling the tech team to manage timers, rundowns, and cues when hosting events for partner churches.
 
@@ -42,7 +42,7 @@
 
 ## Brand Colors
 
-Derived directly from the official DARA logo:
+Derived directly from the official DaRa logo:
 
 | Swatch | Name | Hex | Usage |
 |---|---|---|---|

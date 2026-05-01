@@ -23,7 +23,7 @@ class MyApp extends ConsumerWidget {
     final router = ref.watch(appRouterProvider);
     
     return MaterialApp.router(
-      title: 'DARA',
+      title: 'DaRa',
       theme: AppTheme.light,
       routerConfig: router,
       debugShowCheckedModeBanner: false,

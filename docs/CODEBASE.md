@@ -1,4 +1,4 @@
-# DARA Codebase Documentation
+# DaRa Codebase Documentation
 
 > **M&P Didaskalia Advanced Robotics Association**  
 > Flutter mobile application — internal technical reference
@@ -22,7 +22,7 @@
 
 ## 1. Project Overview
 
-**DARA** is the official mobile companion app for the M&P Didaskalia Advanced Robotics Association. It is also used by the church as an **event operations tool** for hosting and streaming events for partner churches. The app gives operators a single handset tool to manage:
+**DaRa** is the official mobile companion app for the M&P Didaskalia Advanced Robotics Association. It is also used by the church as an **event operations tool** for hosting and streaming events for partner churches. The app gives operators a single handset tool to manage:
 
 - Live match scores and team standings
 - Multi-purpose countdown timers for event segments
@@ -30,7 +30,7 @@
 - Score calculation for competition phases
 
 **Flutter app name (pubspec):** `code_red`  
-**Display title (main.dart):** `DARA Robotics`  
+**Display title (main.dart):** `DaRa Robotics`  
 **Min Android SDK:** 21  
 **Dart SDK:** `^3.11.0`
 
@@ -131,7 +131,7 @@ code_red/
 **Provider:** `calculatorProvider` (StateNotifier)  
 **Data:** `game_rules.dart` — `daraGamePhases` list
 
-A score-tally tool for DARA robotics match phases:
+A score-tally tool for DaRa robotics match phases:
 
 | Phase | Rules |
 |---|---|
@@ -215,11 +215,11 @@ Timeline view of the day's events with:
 
 ### 6.1 Color Palette
 
-Extracted from the official DARA brand logo (`assets/background.jpg`):
+Extracted from the official DaRa brand logo (`assets/background.jpg`):
 
 | Token | Hex | Usage |
 |---|---|---|
-| `primaryBlue` | `#4A6FA5` | Steel blue from DARA logotype — primary actions, links |
+| `primaryBlue` | `#4A6FA5` | Steel blue from DaRa logotype — primary actions, links |
 | `primaryBlueDark` | `#2C4A7C` | Deep navy — AppBar, text headings |
 | `secondaryGold` | `#F5A623` | Amber gold from lion icon — secondary actions, highlights |
 | `secondaryGoldDark` | `#D4881A` | Rich gold — pressed/hover states |
