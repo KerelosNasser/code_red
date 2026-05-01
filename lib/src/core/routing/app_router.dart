@@ -51,8 +51,8 @@ class ScaffoldWithNavBar extends StatelessWidget {
         ],
         color: AppColors.primaryBlueDark,
         circleColor: AppColors.secondaryGold,
-        height: 60,
-        circleWidth: 62,
+        height: 70,
+        circleWidth: 60,
         activeIndex: currentIndex,
         onTap: (index) {
           switch (index) {

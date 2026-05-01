@@ -141,13 +141,12 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
               itemBuilder: (context, index) {
                 final seg = _segments[index];
                 return _SegmentCard(
-                  key: ValueKey(seg.id),
                   segment: seg,
                   index: index + 1,
                   onStatusTap: () => _advanceStatus(seg),
                   onLaunchTimer: () => _launchTimer(seg),
-                  onDelete: () => setState(() => _segments.removeAt(index)),
-                ).animate().fadeIn(delay: (60 * index).ms).slideX(begin: 0.05);
+                  onDelete: () => setState(() => _segments.removeWhere((s) => s.id == seg.id)),
+                ).animate(key: ValueKey(seg.id)).fadeIn(delay: (60 * index).ms).slideX(begin: 0.05);
               },
             ),
           ),
@@ -184,7 +183,7 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
               ),
               const SizedBox(height: 12),
               DropdownButtonFormField<SegmentType>(
-                value: selectedType,
+                initialValue: selectedType,
                 decoration: const InputDecoration(labelText: 'Type'),
                 items: SegmentType.values
                     .map((t) => DropdownMenuItem(
@@ -305,7 +304,6 @@ class _SegmentCard extends StatelessWidget {
   final VoidCallback onDelete;
 
   const _SegmentCard({
-    super.key,
     required this.segment,
     required this.index,
     required this.onStatusTap,
