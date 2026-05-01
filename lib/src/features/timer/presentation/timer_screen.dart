@@ -36,11 +36,6 @@ class TimerScreen extends ConsumerWidget {
       ),
       body: Column(
         children: [
-          // ── Mode Selector ───────────────────────────────────────────────
-          _ModeSelector(
-            current: timerState.mode,
-            onChanged: notifier.setMode,
-          ),
           // ── Main Timer Display ──────────────────────────────────────────
           Expanded(
             child: SingleChildScrollView(
@@ -48,7 +43,11 @@ class TimerScreen extends ConsumerWidget {
               child: Column(
                 children: [
                   const SizedBox(height: 16),
-                  _TimerDisplay(state: timerState, color: displayColor),
+                  _TimerDisplay(
+                    state: timerState, 
+                    color: displayColor,
+                    onModeChanged: notifier.setMode,
+                  ),
                   const SizedBox(height: 8),
                   if (timerState.presetLabel != null)
                     Text(
@@ -92,79 +91,6 @@ class TimerScreen extends ConsumerWidget {
   }
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Mode Selector
-// ─────────────────────────────────────────────────────────────────────────────
-
-class _ModeSelector extends StatelessWidget {
-  final TimerMode current;
-  final ValueChanged<TimerMode> onChanged;
-
-  const _ModeSelector({required this.current, required this.onChanged});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: AppColors.primaryBlueDark,
-      child: Row(
-        children: TimerMode.values.map((mode) {
-          final active = mode == current;
-          return Expanded(
-            child: GestureDetector(
-              onTap: () => onChanged(mode),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(vertical: 12),
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      color: active ? AppColors.secondaryGold : Colors.transparent,
-                      width: 3,
-                    ),
-                  ),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(
-                      _iconFor(mode),
-                      size: 18,
-                      color: active ? AppColors.secondaryGold : Colors.white54,
-                    ),
-                    const SizedBox(height: 2),
-                    Text(
-                      _labelFor(mode),
-                      style: TextStyle(
-                        fontSize: 10,
-                        fontWeight: active ? FontWeight.bold : FontWeight.normal,
-                        color: active ? AppColors.secondaryGold : Colors.white54,
-                        letterSpacing: 0.5,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-
-  IconData _iconFor(TimerMode m) => switch (m) {
-        TimerMode.countdown => Icons.timer_outlined,
-        TimerMode.stopwatch => Icons.av_timer_rounded,
-        TimerMode.clock => Icons.access_time_rounded,
-        TimerMode.preService => Icons.alarm_rounded,
-      };
-
-  String _labelFor(TimerMode m) => switch (m) {
-        TimerMode.countdown => 'COUNTDOWN',
-        TimerMode.stopwatch => 'STOPWATCH',
-        TimerMode.clock => 'CLOCK',
-        TimerMode.preService => 'PRE-SERVICE',
-      };
-}
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Timer Display (circular arc + digits)
@@ -173,8 +99,13 @@ class _ModeSelector extends StatelessWidget {
 class _TimerDisplay extends StatelessWidget {
   final TimerState state;
   final Color color;
+  final ValueChanged<TimerMode> onModeChanged;
 
-  const _TimerDisplay({required this.state, required this.color});
+  const _TimerDisplay({
+    required this.state,
+    required this.color,
+    required this.onModeChanged,
+  });
 
   String _formatDuration(int secs) {
     final h = secs ~/ 3600;
@@ -208,57 +139,92 @@ class _TimerDisplay extends StatelessWidget {
     final showArc = state.mode == TimerMode.countdown ||
         state.mode == TimerMode.preService;
 
-    return Center(
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          if (showArc)
-            SizedBox(
-              width: 240,
-              height: 240,
-              child: AnimatedBuilder(
-                animation: const AlwaysStoppedAnimation(0),
-                builder: (_, __) => CustomPaint(
-                  painter: _ArcPainter(
-                    progress: state.progress,
-                    color: color,
-                  ),
-                ),
-              ),
-            ),
-          Padding(
-            padding: EdgeInsets.all(showArc ? 40 : 0),
-            child: Text(
-              _displayText,
-              style: TextStyle(
-                fontFamily: 'Courier',
-                fontSize: state.mode == TimerMode.clock ? 42 : 58,
-                fontWeight: FontWeight.bold,
-                color: color,
-                fontFeatures: const [FontFeature.tabularFigures()],
-              ),
-            )
-                .animate(key: ValueKey(state.isCritical))
-                .then()
-                .shimmer(
-                  duration: state.isCritical ? 800.ms : 0.ms,
-                  color: state.isCritical
-                      ? AppColors.timerCritical.withValues(alpha: 0.6)
-                      : Colors.transparent,
-                ),
-          ),
-          if (state.status == TimerStateStatus.finished)
-            Positioned(
-              bottom: 0,
-              child: Text(
-                '✓ TIME\'S UP',
-                style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                      color: AppColors.timerCritical,
-                      letterSpacing: 2,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Ensure the timer fits on smaller screens
+        final maxSize = constraints.maxWidth < 360 ? constraints.maxWidth - 32 : 320.0;
+        final arcSize = maxSize * 0.75; // Timer arc is 75% of the total area to leave room for buttons
+        
+        return Center(
+          child: SizedBox(
+            width: maxSize,
+            height: maxSize,
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+                if (showArc)
+                  SizedBox(
+                    width: arcSize,
+                    height: arcSize,
+                    child: AnimatedBuilder(
+                      animation: const AlwaysStoppedAnimation(0),
+                      builder: (_, __) => CustomPaint(
+                        painter: _ArcPainter(
+                          progress: state.progress,
+                          color: color,
+                        ),
+                      ),
                     ),
-              ).animate().fadeIn().scale(),
+                  ),
+                Padding(
+                  padding: EdgeInsets.all(showArc ? 40 : 0),
+                  child: Text(
+                    _displayText,
+                    style: TextStyle(
+                      fontFamily: 'Courier',
+                      fontSize: state.mode == TimerMode.clock ? maxSize * 0.13 : maxSize * 0.16,
+                      fontWeight: FontWeight.bold,
+                      color: color,
+                      fontFeatures: const [FontFeature.tabularFigures()],
+                    ),
+                  )
+                      .animate(key: ValueKey(state.isCritical))
+                      .then()
+                      .shimmer(
+                        duration: state.isCritical ? 800.ms : 0.ms,
+                        color: state.isCritical
+                            ? AppColors.timerCritical.withValues(alpha: 0.6)
+                            : Colors.transparent,
+                      ),
+                ),
+                if (state.status == TimerStateStatus.finished)
+                  Positioned(
+                    bottom: maxSize * 0.15,
+                    child: Text(
+                      '✓ TIME\'S UP',
+                      style: Theme.of(context).textTheme.labelLarge?.copyWith(
+                            color: AppColors.timerCritical,
+                            letterSpacing: 2,
+                          ),
+                    ).animate().fadeIn().scale(),
+                  ),
+                // Mode Floating Buttons
+                _buildModeButton(context, TimerMode.countdown, const Alignment(-0.95, -0.95), Icons.timer_outlined, 'Countdown'),
+                _buildModeButton(context, TimerMode.stopwatch, const Alignment(0.95, -0.95), Icons.av_timer_rounded, 'Stopwatch'),
+                _buildModeButton(context, TimerMode.clock, const Alignment(-0.95, 0.95), Icons.access_time_rounded, 'Clock'),
+                _buildModeButton(context, TimerMode.preService, const Alignment(0.95, 0.95), Icons.alarm_rounded, 'Pre-Service'),
+              ],
             ),
-        ],
+          ),
+        );
+      }
+    );
+  }
+
+  Widget _buildModeButton(BuildContext context, TimerMode mode, Alignment alignment, IconData icon, String tooltip) {
+    final isActive = state.mode == mode;
+    return Align(
+      alignment: alignment,
+      child: Tooltip(
+        message: tooltip,
+        child: FloatingActionButton.small(
+          heroTag: mode.toString(),
+          elevation: isActive ? 6 : 0,
+          backgroundColor: isActive ? AppColors.secondaryGold : AppColors.cardBg,
+          foregroundColor: isActive ? Colors.white : AppColors.primaryBlueDark,
+          onPressed: () => onModeChanged(mode),
+          child: Icon(icon),
+        ),
       ),
     );
   }
