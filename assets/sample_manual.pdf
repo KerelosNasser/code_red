@@ -1,0 +1,124 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+
+2 0 obj
+<< /Type /Pages /Kids [3 0 R 4 0 R] /Count 2 >>
+endobj
+
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842]
+   /Contents 5 0 R /Resources << /Font << /F1 6 0 R >> >> >>
+endobj
+
+4 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842]
+   /Contents 7 0 R /Resources << /Font << /F1 6 0 R >> >> >>
+endobj
+
+5 0 obj
+<< /Length 850 >>
+stream
+BT
+/F1 28 Tf
+180 780 Td
+(DARA APP) Tj
+0 -50 Td
+/F1 18 Tf
+120 0 Td
+(User Manual) Tj
+0 -80 Td
+/F1 13 Tf
+-200 0 Td
+(Welcome to the DaRa Church Event Management App.) Tj
+0 -30 Td
+(This manual covers all features available in the app.) Tj
+0 -60 Td
+/F1 16 Tf
+(NAVIGATION) Tj
+0 -30 Td
+/F1 13 Tf
+(The app has 5 main sections accessible from the bottom bar:) Tj
+0 -28 Td
+(  Calculator  -  Score and calculation tools) Tj
+0 -24 Td
+(  Timer       -  Service countdown and stopwatch) Tj
+0 -24 Td
+(  Manual      -  This documentation) Tj
+0 -24 Td
+(  Matches     -  Event match tracking) Tj
+0 -24 Td
+(  Schedule    -  Service schedule management) Tj
+0 -60 Td
+/F1 16 Tf
+(TIMER FEATURES) Tj
+0 -30 Td
+/F1 13 Tf
+(Countdown Timer: Set a duration for any service segment.) Tj
+0 -24 Td
+(Stopwatch: Track elapsed time during live events.) Tj
+0 -24 Td
+(Fullscreen Mode: Tap the expand button to go fullscreen.) Tj
+0 -24 Td
+(Presets: Save custom durations for quick access.) Tj
+ET
+endstream
+endobj
+
+7 0 obj
+<< /Length 700 >>
+stream
+BT
+/F1 20 Tf
+120 780 Td
+(CALCULATOR FEATURES) Tj
+0 -50 Td
+/F1 13 Tf
+0 0 Td
+(The DaRa calculator is designed for church event scoring.) Tj
+0 -30 Td
+(Use it to tally points, scores, and participation counts.) Tj
+0 -60 Td
+/F1 20 Tf
+(MATCHES) Tj
+0 -40 Td
+/F1 13 Tf
+(Track live matches and competition results.) Tj
+0 -24 Td
+(Each match entry shows teams, scores, and timing.) Tj
+0 -60 Td
+/F1 20 Tf
+(SCHEDULE) Tj
+0 -40 Td
+/F1 13 Tf
+(Manage the full service schedule from this section.) Tj
+0 -24 Td
+(Add, reorder, and time each service segment.) Tj
+0 -60 Td
+/F1 16 Tf
+(Need help? Contact your DaRa administrator.) Tj
+ET
+endstream
+endobj
+
+6 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold >>
+endobj
+
+xref
+0 8
+0000000000 65535 f
+0000000009 00000 n
+0000000058 00000 n
+0000000115 00000 n
+0000000274 00000 n
+0000000433 00000 n
+0000001359 00000 n
+0000001467 00000 n
+
+trailer
+<< /Size 8 /Root 1 0 R >>
+startxref
+1547
+%%EOF

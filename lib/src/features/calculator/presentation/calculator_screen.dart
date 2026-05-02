@@ -24,9 +24,11 @@ class CalculatorScreen extends ConsumerWidget {
         title: 'SCORE CALCULATOR',
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => notifier.reset(),
-          ).animate(key: const ValueKey('refresh_btn')).rotate(duration: 500.ms),
+                icon: const Icon(Icons.refresh),
+                onPressed: () => notifier.reset(),
+              )
+              .animate(key: const ValueKey('refresh_btn'))
+              .rotate(duration: 500.ms),
         ],
       ),
       body: Column(
@@ -39,11 +41,11 @@ class CalculatorScreen extends ConsumerWidget {
               itemBuilder: (context, index) {
                 final phase = daraGamePhases[index];
                 return _PhaseSection(
-                  key: ValueKey('phase_${phase.title}'),
-                  phase: phase,
-                  scores: scores,
-                  notifier: notifier,
-                )
+                      key: ValueKey('phase_${phase.title}'),
+                      phase: phase,
+                      scores: scores,
+                      notifier: notifier,
+                    )
                     .animate(key: ValueKey('phase_anim_${phase.title}'))
                     .fadeIn(delay: (100 * index).ms, duration: 500.ms)
                     .slideY(begin: 0.1, end: 0);
@@ -67,11 +69,7 @@ class _ScoreSummary extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.symmetric(vertical: 32, horizontal: 16),
       decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [AppColors.primaryBlueDark, AppColors.accentMaroon],
-        ),
+        color: AppColors.primaryBlueDark,
         borderRadius: BorderRadius.only(
           bottomLeft: Radius.circular(32),
           bottomRight: Radius.circular(32),
@@ -89,13 +87,15 @@ class _ScoreSummary extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '$totalScore',
-            style: Theme.of(context).textTheme.displayLarge?.copyWith(
+                '$totalScore',
+                style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   color: Colors.white,
                   fontSize: 72,
                   fontWeight: FontWeight.bold,
                 ),
-          ).animate(key: ValueKey('score_text_$totalScore')).scale(duration: 200.ms, curve: Curves.easeOut),
+              )
+              .animate(key: ValueKey('score_text_$totalScore'))
+              .scale(duration: 200.ms, curve: Curves.easeOut),
         ],
       ),
     );
@@ -124,18 +124,20 @@ class _PhaseSection extends StatelessWidget {
           child: Text(
             phase.title.toUpperCase(),
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                  color: Theme.of(context).primaryColor,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                ),
+              color: Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.2,
+            ),
           ),
         ),
-        ...phase.rules.map((rule) => _RuleItem(
-              key: ValueKey(rule.id),
-              rule: rule,
-              value: scores[rule.id] ?? 0,
-              onChanged: (delta) => notifier.updateScore(rule.id, delta),
-            )),
+        ...phase.rules.map(
+          (rule) => _RuleItem(
+            key: ValueKey(rule.id),
+            rule: rule,
+            value: scores[rule.id] ?? 0,
+            onChanged: (delta) => notifier.updateScore(rule.id, delta),
+          ),
+        ),
         const Divider(height: 32),
       ],
     );
@@ -163,51 +165,50 @@ class _RuleItem extends StatelessWidget {
         child: Row(
           children: [
             Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      rule.label,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    rule.label,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 16,
                     ),
-                    Text(
-                      '${rule.pointsPerUnit} points per unit',
-                      style: TextStyle(
-                        color: Colors.grey[600],
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
+                  ),
+                  Text(
+                    '${rule.pointsPerUnit} points per unit',
+                    style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                  ),
+                ],
               ),
-              if (rule.type == RuleType.counter)
-                Row(
-                  children: [
-                    _ControlBtn(
-                      icon: Icons.remove,
-                      onPressed: value > 0 ? () => onChanged(-1) : null,
-                    ),
-                    SizedBox(
-                      width: context.scaleWidth(40),
-                      child: Center(
-                        child: Text(
-                          '$value',
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+            ),
+            if (rule.type == RuleType.counter)
+              Row(
+                children: [
+                  _ControlBtn(
+                    icon: Icons.remove,
+                    onPressed: value > 0 ? () => onChanged(-1) : null,
+                  ),
+                  SizedBox(
+                    width: context.scaleWidth(40),
+                    child: Center(
+                      child: Text(
+                        '$value',
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    _ControlBtn(
-                      icon: Icons.add,
-                      onPressed: value < rule.maxValue ? () => onChanged(1) : null,
-                    ),
-                  ],
-                )
+                  ),
+                  _ControlBtn(
+                    icon: Icons.add,
+                    onPressed: value < rule.maxValue
+                        ? () => onChanged(1)
+                        : null,
+                  ),
+                ],
+              )
             else if (rule.type == RuleType.toggle)
               Switch(
                 value: value > 0,

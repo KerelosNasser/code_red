@@ -19,9 +19,9 @@ class AppShell extends StatelessWidget {
     int currentIndex = 0;
     if (location.startsWith('/timer')) {
       currentIndex = 1;
-    } else if (location.startsWith('/matches')) {
-      currentIndex = 2;
     } else if (location.startsWith('/leaderboard')) {
+      currentIndex = 2;
+    } else if (location.startsWith('/matches')) {
       currentIndex = 3;
     } else if (location.startsWith('/schedule')) {
       currentIndex = 4;
@@ -39,12 +39,12 @@ class AppShell extends StatelessWidget {
           ),
           Icon(Icons.timer, color: Colors.white, size: context.scaleFont(24)),
           Icon(
-            Icons.emoji_events,
+            Icons.menu_book_rounded,
             color: Colors.white,
             size: context.scaleFont(24),
           ),
           Icon(
-            Icons.leaderboard,
+            Icons.emoji_events,
             color: Colors.white,
             size: context.scaleFont(24),
           ),
@@ -70,14 +70,14 @@ class AppShell extends StatelessWidget {
             ),
           ),
           Text(
-            "Matches",
+            "Manual",
             style: TextStyle(
               color: Colors.white,
               fontSize: context.scaleFont(12),
             ),
           ),
           Text(
-            "Board",
+            "Matches",
             style: TextStyle(
               color: Colors.white,
               fontSize: context.scaleFont(12),
@@ -105,10 +105,10 @@ class AppShell extends StatelessWidget {
               context.go('/timer');
               break;
             case 2:
-              context.go('/matches');
+              context.go('/leaderboard');
               break;
             case 3:
-              context.go('/leaderboard');
+              context.go('/matches');
               break;
             case 4:
               context.go('/schedule');

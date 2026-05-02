@@ -40,6 +40,7 @@ dependencies:
   flutter_animate: ^4.5.0
   circle_nav_bar: ^2.2.0
   flutter_launcher_icons: ^0.14.4
+  pdfrx: ^2.2.24
 
 dev_dependencies:
   flutter_test:
@@ -61,6 +62,7 @@ flutter:
 
   assets:
     - assets/Dara-main logo.png
+    - assets/sample_manual.pdf
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
