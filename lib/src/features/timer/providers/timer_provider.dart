@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:audioplayers/audioplayers.dart';
 
 part 'timer_provider.g.dart';
 
@@ -105,16 +106,25 @@ class TimerState {
 @riverpod
 class TimerNotifier extends _$TimerNotifier {
   Timer? _timer;
-  int _initialDuration = 150; // default 2:30
+  static const int _defaultDuration = 600; // 10 minutes static duration
+  final AudioPlayer _audioPlayer = AudioPlayer();
+  int? _lastPlayedSecond;
+
+  // High-quality Remote Sound URLs
+  static const String _warningUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-software-interface-start-2574.mp3';
+  static const String _finishedUrl = 'https://assets.mixkit.co/sfx/preview/mixkit-game-success-alert-2039.mp3';
 
   @override
   TimerState build() {
-    ref.onDispose(() => _timer?.cancel());
+    ref.onDispose(() {
+      _timer?.cancel();
+      _audioPlayer.dispose();
+    });
     return TimerState(
       mode: TimerMode.countdown,
       status: TimerStateStatus.initial,
-      durationRemaining: _initialDuration,
-      totalDuration: _initialDuration,
+      durationRemaining: _defaultDuration,
+      totalDuration: _defaultDuration,
       elapsed: 0,
       clockNow: DateTime.now(),
     );
@@ -123,66 +133,14 @@ class TimerNotifier extends _$TimerNotifier {
   // ── Mode switching ─────────────────────────────────────────────────────────
 
   void setMode(TimerMode mode) {
-    _timer?.cancel();
-    _initialDuration = 150;
-    state = TimerState(
-      mode: mode,
-      status: TimerStateStatus.initial,
-      durationRemaining: _initialDuration,
-      totalDuration: _initialDuration,
-      elapsed: 0,
-      clockNow: DateTime.now(),
-    );
-    // Clock mode auto-starts ticking immediately
-    if (mode == TimerMode.clock) _startClockTick();
-  }
-
-  // ── Preset loading ─────────────────────────────────────────────────────────
-
-  void setPreset(int seconds, {String? label}) {
-    _timer?.cancel();
-    _initialDuration = seconds;
-    state = TimerState(
-      mode: state.mode == TimerMode.stopwatch ? TimerMode.countdown : state.mode,
-      status: TimerStateStatus.initial,
-      durationRemaining: seconds,
-      totalDuration: seconds,
-      elapsed: 0,
-      clockNow: DateTime.now(),
-      presetLabel: label,
-    );
-  }
-
-  // ── Pre-service target ─────────────────────────────────────────────────────
-
-  void setPreServiceTarget(DateTime target) {
-    _timer?.cancel();
-    final remaining = target.difference(DateTime.now()).inSeconds;
-    state = state.copyWith(
-      mode: TimerMode.preService,
-      status: TimerStateStatus.initial,
-      preServiceTarget: target,
-      durationRemaining: remaining.clamp(0, 86400),
-      totalDuration: remaining.clamp(0, 86400),
-      elapsed: 0,
-    );
+    reset();
   }
 
   // ── Controls ───────────────────────────────────────────────────────────────
 
   void start() {
     if (state.status == TimerStateStatus.running) return;
-
-    switch (state.mode) {
-      case TimerMode.countdown:
-        _startCountdown();
-      case TimerMode.stopwatch:
-        _startStopwatch();
-      case TimerMode.clock:
-        _startClockTick();
-      case TimerMode.preService:
-        _startPreService();
-    }
+    _startCountdown();
   }
 
   void pause() {
@@ -193,19 +151,15 @@ class TimerNotifier extends _$TimerNotifier {
 
   void reset() {
     _timer?.cancel();
+    _lastPlayedSecond = null;
     state = TimerState(
-      mode: state.mode,
-      status: state.mode == TimerMode.clock
-          ? TimerStateStatus.running
-          : TimerStateStatus.initial,
-      durationRemaining: _initialDuration,
-      totalDuration: _initialDuration,
+      mode: TimerMode.countdown,
+      status: TimerStateStatus.initial,
+      durationRemaining: _defaultDuration,
+      totalDuration: _defaultDuration,
       elapsed: 0,
       clockNow: DateTime.now(),
-      preServiceTarget: state.preServiceTarget,
-      presetLabel: state.presetLabel,
     );
-    if (state.mode == TimerMode.clock) _startClockTick();
   }
 
   // ── Private tick implementations ───────────────────────────────────────────
@@ -214,18 +168,30 @@ class TimerNotifier extends _$TimerNotifier {
     final resuming = state.status == TimerStateStatus.paused;
     state = state.copyWith(
       status: TimerStateStatus.running,
-      durationRemaining: resuming ? state.durationRemaining : _initialDuration,
-      totalDuration: resuming ? state.totalDuration : _initialDuration,
+      durationRemaining: resuming ? state.durationRemaining : _defaultDuration,
+      totalDuration: resuming ? state.totalDuration : _defaultDuration,
     );
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       if (state.durationRemaining > 0) {
+        final nextValue = state.durationRemaining - 1;
+        
+        // ── Sound Triggers ─────────────────────────────────────────────────
+        if (nextValue == 60 && _lastPlayedSecond != 60) {
+          _playSound(_warningUrl); 
+          _lastPlayedSecond = 60;
+        }
+
         state = state.copyWith(
-          durationRemaining: state.durationRemaining - 1,
+          durationRemaining: nextValue,
           clockNow: DateTime.now(),
         );
       } else {
         _timer?.cancel();
+        if (_lastPlayedSecond != 0) {
+          _playSound(_finishedUrl);
+          _lastPlayedSecond = 0;
+        }
         state = state.copyWith(
           durationRemaining: 0,
           status: TimerStateStatus.finished,
@@ -234,6 +200,16 @@ class TimerNotifier extends _$TimerNotifier {
       }
     });
   }
+
+  Future<void> _playSound(String url) async {
+    try {
+      await _audioPlayer.play(UrlSource(url));
+    } catch (e) {
+      // Silently fail if audio play fails
+    }
+  }
+
+  // ── Other modes (Unused in simplified version) ───────────────────────────
 
   void _startStopwatch() {
     state = state.copyWith(status: TimerStateStatus.running);
@@ -254,30 +230,6 @@ class TimerNotifier extends _$TimerNotifier {
     _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), (_) {
       state = state.copyWith(clockNow: DateTime.now());
-    });
-  }
-
-  void _startPreService() {
-    final target = state.preServiceTarget;
-    if (target == null) return;
-
-    state = state.copyWith(status: TimerStateStatus.running);
-    _timer?.cancel();
-    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
-      final remaining = target.difference(DateTime.now()).inSeconds;
-      if (remaining > 0) {
-        state = state.copyWith(
-          durationRemaining: remaining,
-          clockNow: DateTime.now(),
-        );
-      } else {
-        _timer?.cancel();
-        state = state.copyWith(
-          durationRemaining: 0,
-          status: TimerStateStatus.finished,
-          clockNow: DateTime.now(),
-        );
-      }
     });
   }
 }

@@ -41,6 +41,7 @@ dependencies:
   circle_nav_bar: ^2.2.0
   flutter_launcher_icons: ^0.14.4
   pdfrx: ^2.2.24
+  audioplayers: ^6.6.0
 
 dev_dependencies:
   flutter_test:

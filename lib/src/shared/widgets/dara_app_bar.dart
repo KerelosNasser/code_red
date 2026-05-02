@@ -4,9 +4,10 @@ import '../../core/theme/app_colors.dart';
 
 class DaraAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  final Widget? leading;
   final List<Widget>? actions;
 
-  const DaraAppBar({super.key, required this.title, this.actions});
+  const DaraAppBar({super.key, required this.title, this.leading, this.actions});
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +24,7 @@ class DaraAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       elevation: 4,
       shadowColor: AppColors.primaryBlueDark.withValues(alpha: 0.5),
+      leading: leading,
       actions: actions,
       flexibleSpace: Container(
         decoration: const BoxDecoration(
