@@ -14,7 +14,7 @@ class AppShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final location = GoRouterState.of(context).matchedLocation;
-    
+
     // Determine current index based on route
     int currentIndex = 0;
     if (location.startsWith('/timer')) {
@@ -32,18 +32,64 @@ class AppShell extends StatelessWidget {
       body: child,
       bottomNavigationBar: CircleNavBar(
         activeIcons: [
-          Icon(Icons.calculate, color: Colors.white, size: context.scaleFont(24)),
+          Icon(
+            Icons.calculate,
+            color: Colors.white,
+            size: context.scaleFont(24),
+          ),
           Icon(Icons.timer, color: Colors.white, size: context.scaleFont(24)),
-          Icon(Icons.emoji_events, color: Colors.white, size: context.scaleFont(24)),
-          Icon(Icons.leaderboard, color: Colors.white, size: context.scaleFont(24)),
-          Icon(Icons.calendar_today, color: Colors.white, size: context.scaleFont(24)),
+          Icon(
+            Icons.emoji_events,
+            color: Colors.white,
+            size: context.scaleFont(24),
+          ),
+          Icon(
+            Icons.leaderboard,
+            color: Colors.white,
+            size: context.scaleFont(24),
+          ),
+          Icon(
+            Icons.calendar_today,
+            color: Colors.white,
+            size: context.scaleFont(24),
+          ),
         ],
         inactiveIcons: [
-          Text("Calc", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
-          Text("Timer", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
-          Text("Matches", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
-          Text("Board", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
-          Text("Sched", style: TextStyle(color: Colors.white, fontSize: context.scaleFont(12))),
+          Text(
+            "Calc",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.scaleFont(12),
+            ),
+          ),
+          Text(
+            "Timer",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.scaleFont(12),
+            ),
+          ),
+          Text(
+            "Matches",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.scaleFont(12),
+            ),
+          ),
+          Text(
+            "Board",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.scaleFont(12),
+            ),
+          ),
+          Text(
+            "Sched",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: context.scaleFont(12),
+            ),
+          ),
         ],
         color: AppColors.primaryBlueDark,
         circleColor: AppColors.secondaryGold,
@@ -69,7 +115,11 @@ class AppShell extends StatelessWidget {
               break;
           }
         },
-        padding: EdgeInsets.only(left: context.scaleWidth(16), right: context.scaleWidth(16), bottom: 20),
+        padding: EdgeInsets.only(
+          left: context.scaleWidth(16),
+          right: context.scaleWidth(16),
+          bottom: 20,
+        ),
         cornerRadius: const BorderRadius.only(
           topLeft: Radius.circular(8),
           topRight: Radius.circular(8),
@@ -82,7 +132,7 @@ class AppShell extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [AppColors.primaryBlueDark, AppColors.accentMaroon],
+          colors: [AppColors.accentMaroon, AppColors.accentMaroon],
         ),
         circleGradient: const LinearGradient(
           begin: Alignment.topLeft,

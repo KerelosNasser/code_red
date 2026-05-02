@@ -29,7 +29,10 @@ class DaraAppBar extends StatelessWidget implements PreferredSizeWidget {
           gradient: LinearGradient(
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
-            colors: [AppColors.primaryBlueDark, AppColors.accentMaroon],
+            colors: <Color>[
+              AppColors.primaryBlueDark,
+              AppColors.primaryBlueDark,
+            ],
           ),
         ),
       ),
