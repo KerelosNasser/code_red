@@ -19,7 +19,7 @@ class AppShell extends StatelessWidget {
     int currentIndex = 0;
     if (location.startsWith('/timer')) {
       currentIndex = 1;
-    } else if (location.startsWith('/leaderboard')) {
+    } else if (location.startsWith('/manual')) {
       currentIndex = 2;
     } else if (location.startsWith('/matches')) {
       currentIndex = 3;
@@ -105,7 +105,7 @@ class AppShell extends StatelessWidget {
               context.go('/timer');
               break;
             case 2:
-              context.go('/leaderboard');
+              context.go('/manual');
               break;
             case 3:
               context.go('/matches');

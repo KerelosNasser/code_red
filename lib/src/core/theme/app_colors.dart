@@ -27,7 +27,7 @@ class AppColors {
 
   // ── Surfaces ─────────────────────────────────────────────────────────────────
   /// Warm cream from the logo background (#F5F0E8)
-  static const Color background = Color(0xFFF5F0E8);
+  static const Color background = Color(0xFFFFFFFF);
 
   /// Pure white surface for cards / modals
   static const Color surface = Color(0xFFFFFFFF);
@@ -44,10 +44,10 @@ class AppColors {
   // ── Semantic ─────────────────────────────────────────────────────────────────
   static const Color success = Color(0xFF2E7D32);
   static const Color warning = Color(0xFFF5A623); // reuse gold
-  static const Color error = Color(0xFF8B1A1A);   // reuse maroon
+  static const Color error = Color(0xFF8B1A1A); // reuse maroon
 
   // ── Timer States ─────────────────────────────────────────────────────────────
   static const Color timerNormal = primaryBlue;
-  static const Color timerWarning = secondaryGold;  // last 5 min
-  static const Color timerCritical = accentMaroon;  // last 1 min
+  static const Color timerWarning = secondaryGold; // last 5 min
+  static const Color timerCritical = accentMaroon; // last 1 min
 }

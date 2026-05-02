@@ -10,7 +10,7 @@ import 'app_shell.dart';
 
 final appRouterProvider = Provider<GoRouter>((ref) {
   return GoRouter(
-    initialLocation: '/matches',
+    initialLocation: '/manual',
     routes: [
       // ── Fullscreen timer: outside shell so nav bar is hidden ──────────────
       GoRoute(
@@ -36,7 +36,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
             builder: (context, state) => const MatchesScreen(),
           ),
           GoRoute(
-            path: '/leaderboard',
+            path: '/manual',
             builder: (context, state) => const ManualScreen(),
           ),
           GoRoute(

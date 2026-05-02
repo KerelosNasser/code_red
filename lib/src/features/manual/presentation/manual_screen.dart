@@ -28,80 +28,46 @@ class _ManualScreenState extends State<ManualScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: DaraAppBar(
-        title: 'MANUAL',
-        actions: [
-          // Page indicator chip
-          if (_isLoaded)
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-              child: AnimatedContainer(
-                duration: const Duration(milliseconds: 200),
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 2),
-                decoration: BoxDecoration(
-                  color: Colors.white.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: Colors.white30, width: 1),
-                ),
-                child: Text(
-                  '$_currentPage / $_totalPages',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: context.scaleFont(13),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ),
-        ],
-      ),
+      appBar: DaraAppBar(title: 'Manuals'),
       body: Column(
         children: [
-          // ── Branded top band ─────────────────────────────────────────────
-          _TopBand(isLoaded: _isLoaded),
-
-          // ── PDF viewer card ──────────────────────────────────────────────
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.fromLTRB(
-                context.scaleWidth(14),
-                0,
-                context.scaleWidth(14),
-                context.scaleWidth(14),
-              ),
-              child: _PdfCard(
-                child: PdfViewer.asset(
-                  'assets/sample_manual.pdf',
-                  controller: _pdfController,
-                  params: PdfViewerParams(
-                    onViewerReady: (document, controller) {
-                      setState(() {
-                        _totalPages = document.pages.length;
-                        _isLoaded = true;
-                      });
-                    },
-                    onPageChanged: (pageNumber) {
-                      setState(() {
-                        _currentPage = pageNumber ?? 1;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            )
-                .animate()
-                .fadeIn(duration: 400.ms, delay: 200.ms)
-                .slideY(begin: 0.04, end: 0),
+            child:
+                _PdfCard(
+                      child: PdfViewer.asset(
+                        'assets/sample_manual.pdf',
+                        controller: _pdfController,
+                        params: PdfViewerParams(
+                          onViewerReady: (document, controller) {
+                            setState(() {
+                              _totalPages = document.pages.length;
+                              _isLoaded = true;
+                            });
+                          },
+                          onPageChanged: (pageNumber) {
+                            setState(() {
+                              _currentPage = pageNumber ?? 1;
+                            });
+                          },
+                        ),
+                      ),
+                    )
+                    .animate()
+                    .fadeIn(duration: 400.ms, delay: 200.ms)
+                    .slideY(begin: 0.04, end: 0),
           ),
         ],
       ),
       // ── Page navigation FAB ────────────────────────────────────────────
       floatingActionButton: _isLoaded
           ? _PageNavFab(
-              controller: _pdfController,
-              currentPage: _currentPage,
-              totalPages: _totalPages,
-            ).animate().fadeIn(delay: 600.ms).scale(begin: const Offset(0.6, 0.6))
+                  controller: _pdfController,
+                  currentPage: _currentPage,
+                  totalPages: _totalPages,
+                )
+                .animate()
+                .fadeIn(delay: 600.ms)
+                .scale(begin: const Offset(0.6, 0.6))
           : null,
     );
   }
@@ -267,11 +233,7 @@ class _PageNavFab extends StatelessWidget {
                 ? () => controller.goToPage(pageNumber: currentPage - 1)
                 : null,
           ),
-          Container(
-            width: 1,
-            height: 28,
-            color: Colors.white30,
-          ),
+          Container(width: 1, height: 28, color: Colors.white30),
           _NavBtn(
             icon: Icons.arrow_forward_ios_rounded,
             onTap: currentPage < totalPages
