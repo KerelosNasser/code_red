@@ -4,6 +4,7 @@ import '../../features/calculator/presentation/calculator_screen.dart';
 import '../../features/timer/presentation/timer_screen.dart';
 import '../../features/timer/presentation/fullscreen_timer_screen.dart';
 import '../../features/matches/presentation/matches_screen.dart';
+import '../../features/matches/presentation/leaderboard_screen.dart';
 import '../../features/manual/presentation/manual_screen.dart';
 import '../../features/schedule/presentation/schedule_screen.dart';
 import 'app_shell.dart';
@@ -34,6 +35,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           GoRoute(
             path: '/matches',
             builder: (context, state) => const MatchesScreen(),
+            routes: [
+              GoRoute(
+                path: 'leaderboard',
+                builder: (context, state) => const LeaderboardScreen(),
+              ),
+            ],
           ),
           GoRoute(
             path: '/manual',

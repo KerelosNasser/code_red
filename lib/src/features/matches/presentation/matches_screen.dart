@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import '../../../shared/widgets/dara_app_bar.dart';
 import '../../../shared/widgets/dara_card.dart';
 import '../../../core/theme/app_colors.dart';
@@ -26,28 +27,11 @@ class MatchModel {
   });
 }
 
-class TeamStats {
-  final String teamNumber;
-  final int skills;
-  final int teamwork;
-  final int strategy;
-  final int points;
-
-  TeamStats({
-    required this.teamNumber,
-    required this.skills,
-    required this.teamwork,
-    required this.strategy,
-    required this.points,
-  });
-}
-
 class MatchesScreen extends ConsumerWidget {
   const MatchesScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final showLeaderboard = ref.watch(leaderboardVisibleProvider);
     final showMap = ref.watch(mapVisibleProvider);
 
     final mockMatches = [
@@ -84,7 +68,7 @@ class MatchesScreen extends ConsumerWidget {
         title: 'MATCHES',
         leading: IconButton(
           icon: const Icon(Icons.leaderboard),
-          onPressed: () => ref.read(leaderboardVisibleProvider.notifier).state = true,
+          onPressed: () => context.push('/matches/leaderboard'),
         ),
         actions: [
           IconButton(
@@ -162,88 +146,8 @@ class MatchesScreen extends ConsumerWidget {
               );
             },
           ),
-          if (showLeaderboard) const _LeaderboardOverlay(),
           if (showMap) const _MapOverlay(),
         ],
-      ),
-    );
-  }
-}
-
-class _LeaderboardOverlay extends ConsumerWidget {
-  const _LeaderboardOverlay();
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final stats = [
-      TeamStats(teamNumber: '123', skills: 85, teamwork: 90, strategy: 80, points: 255),
-      TeamStats(teamNumber: '456', skills: 78, teamwork: 85, strategy: 82, points: 245),
-      TeamStats(teamNumber: '789', skills: 92, teamwork: 75, strategy: 75, points: 242),
-      TeamStats(teamNumber: '101', skills: 70, teamwork: 88, strategy: 80, points: 238),
-      TeamStats(teamNumber: '202', skills: 82, teamwork: 80, strategy: 75, points: 237),
-    ];
-
-    return Container(
-      color: Colors.black.withOpacity(0.8),
-      child: Center(
-        child: Container(
-          margin: EdgeInsets.all(context.scaleWidth(20)),
-          padding: EdgeInsets.all(context.scaleWidth(16)),
-          decoration: BoxDecoration(
-            color: AppColors.background,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'LEADERBOARD',
-                    style: TextStyle(
-                      fontSize: context.scaleFont(20),
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.primaryBlueDark,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => ref.read(leaderboardVisibleProvider.notifier).state = false,
-                  ),
-                ],
-              ),
-              const Divider(),
-              SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: DataTable(
-                  columnSpacing: 20,
-                  headingRowColor: WidgetStateProperty.all(AppColors.primaryBlue.withOpacity(0.1)),
-                  columns: const [
-                    DataColumn(label: Text('RANK')),
-                    DataColumn(label: Text('TEAM')),
-                    DataColumn(label: Text('SKILLS')),
-                    DataColumn(label: Text('WORK')),
-                    DataColumn(label: Text('STRAT')),
-                    DataColumn(label: Text('PTS')),
-                  ],
-                  rows: stats.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final stat = entry.value;
-                    return DataRow(cells: [
-                      DataCell(Text('${index + 1}')),
-                      DataCell(Text(stat.teamNumber, style: const TextStyle(fontWeight: FontWeight.bold))),
-                      DataCell(Text('${stat.skills}')),
-                      DataCell(Text('${stat.teamwork}')),
-                      DataCell(Text('${stat.strategy}')),
-                      DataCell(Text('${stat.points}', style: const TextStyle(color: AppColors.accentMaroon, fontWeight: FontWeight.bold))),
-                    ]);
-                  }).toList(),
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
